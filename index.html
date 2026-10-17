@@ -174,18 +174,37 @@
           구글 스프레드시트 연동
         </div>
 
+        <!-- ⚡ 1초 원클릭 퀵 액션 (학교 계정 보안 제약 없는 가장 확실한 방법) -->
+        <div class="quick-action-strip">
+          <button type="button" class="btn-quick-import" onclick="readFromClipboard()" title="구글 시트에서 드래그 복사(Ctrl+C)한 내용을 즉시 불러옵니다">
+            <span style="font-size: 24px;">📋</span>
+            <strong>클립보드에서 바로 불러오기</strong>
+            <span class="sub-desc">시트에서 복사(Ctrl+C) 후 클릭! (권한 제약 0%)</span>
+          </button>
+
+          <label class="btn-quick-import" style="cursor: pointer;" title="스프레드시트에서 다운로드한 CSV 또는 텍스트 파일을 직접 선택합니다">
+            <input type="file" id="sheetFileInput" accept=".csv, .tsv, .txt" style="display: none;" onchange="handleFileInput(event)" />
+            <span style="font-size: 24px;">📂</span>
+            <strong>CSV / 엑셀 파일 열기</strong>
+            <span class="sub-desc">시트 [파일-다운로드-CSV] 후 선택</span>
+          </label>
+        </div>
+
         <!-- 모달 상단 탭 -->
         <div class="modal-tabs">
           <button id="tabBtnLink" class="modal-tab-btn active" onclick="switchSheetTab('link')">
             🔗 링크로 불러오기 / 저장
           </button>
           <button id="tabBtnPaste" class="modal-tab-btn" onclick="switchSheetTab('paste')">
-            📋 시트 복사·붙여넣기
+            📝 시트 복사·붙여넣기
           </button>
           <button id="tabBtnGuide" class="modal-tab-btn" onclick="switchSheetTab('guide')">
             📖 권한 해결 가이드
           </button>
         </div>
+
+        <!-- 실시간 상태 및 진단 로그 표시창 -->
+        <div id="sheetStatusLog" class="sheet-status-log"></div>
 
         <!-- 탭 1: 링크 연동 탭 (구글 스프레드시트 주소 & Apps Script URL 동시 지원) -->
         <div id="tabPaneLink" class="tab-pane active">
@@ -275,18 +294,44 @@
               <button class="btn-copy-code" onclick="navigator.clipboard.writeText(document.getElementById('scriptTemplateCode').innerText); showToast('코드가 클립보드에 복사되었습니다!');">
                 코드 복사
               </button>
-              <pre id="scriptTemplateCode"><code>// 1인 1역할 구글 시트 연동 스크립트
+              <pre id="scriptTemplateCode"><code>// 1인 1역할 구글 시트 연동 스크립트 (JSONP & CORS 완벽 지원)
 function doGet(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getActiveSheet();
   var data = sheet.getDataRange().getValues();
-  // A열: 학생 이름, B열: 역할명, C열: 역할설명
+  
   var students = [];
   var roles = [];
+  
+  // 첫 번째 행은 제목(헤더)으로 간주하고 1행부터 읽음
   for (var i = 1; i < data.length; i++) {
-    if (data[i][0]) students.push(data[i][0]);
-    if (data[i][1]) roles.push({ icon: "⭐", title: data[i][1], desc: data[i][2] || "" });
+    var row = data[i];
+    if (row[0] !== "" && row[0] !== null) {
+      students.push(String(row[0]).trim());
+    }
+    if (row[1] !== "" && row[1] !== null) {
+      roles.push({
+        icon: "⭐",
+        title: String(row[1]).trim(),
+        desc: row[2] ? String(row[2]).trim() : "우리 반을 위한 소중한 역할이에요."
+      });
+    }
   }
-  return ContentService.createTextOutput(JSON.stringify({ students: students, roles: roles }))
+  
+  var result = {
+    status: "ok",
+    students: students,
+    roles: roles
+  };
+  
+  // JSONP 콜백 파라미터 지원 (브라우저 CORS 제약 100% 우회)
+  var callback = e && e.parameter && e.parameter.callback;
+  if (callback) {
+    return ContentService.createTextOutput(callback + '(' + JSON.stringify(result) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  
+  return ContentService.createTextOutput(JSON.stringify(result))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -296,9 +341,11 @@ function doPost(e) {
   var sheet = ss.getSheetByName("배정결과") || ss.insertSheet("배정결과");
   sheet.clear();
   sheet.appendRow(["번호", "학생 이름", "담당 역할", "역할 설명"]);
-  params.assignments.forEach(function(row) {
-    sheet.appendRow([row.index, row.student, row.role, row.desc]);
-  });
+  if (params.assignments && params.assignments.length) {
+    params.assignments.forEach(function(row) {
+      sheet.appendRow([row.index, row.student, row.role, row.desc]);
+    });
+  }
   return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
     .setMimeType(ContentService.MimeType.JSON);
 }</code></pre>
