@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>우리 반 1인 1역할 배정기</title>
+  <meta name="description" content="초등학교 학급을 위한 1인 1역할 무작위 배정 및 게시판 부착용 A4 인쇄, 구글 스프레드시트 연동 준비 웹 애플리케이션" />
+  <meta property="og:title" content="우리 반 1인 1역할 배정기" />
+  <meta property="og:description" content="초등학교 학급을 위한 1인 1역할 무작위 배정 및 게시판 부착용 A4 인쇄, 구글 스프레드시트 연동 준비 웹 애플리케이션" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- 축하 콘페티 효과 캔버스 -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <div class="app-container">
+    <!-- 상단 헤더 영역 -->
+    <header class="top-header">
+      <div class="brand-section">
+        <div class="brand-icon">🏫</div>
+        <div class="brand-text">
+          <h1>우리 반 1인 1역할 배정기</h1>
+          <input 
+            type="text" 
+            id="classTitleInput" 
+            class="class-title-input" 
+            value="우리 반 1인 1역할 안내판" 
+            title="학급 이름을 클릭하여 수정할 수 있습니다 (예: 4학년 2반)" 
+          />
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- 구글 스프레드시트 연동 버튼 자리 -->
+        <button class="btn btn-sheet-load" onclick="openSheetModal('load')">
+          <span>🔄</span> 시트 불러오기
+        </button>
+        <button class="btn btn-sheet-save" onclick="openSheetModal('save')">
+          <span>💾</span> 시트에 결과 저장
+        </button>
+        <!-- 교실 게시판 부착용 A4 깔끔 인쇄 버튼 -->
+        <button class="btn btn-print" onclick="triggerPrint()">
+          <span>🖨️</span> 게시판용 A4 인쇄
+        </button>
+        <!-- 명단 및 역할 관리 버튼 -->
+        <button class="btn btn-secondary" onclick="openEditorModal()">
+          <span>⚙️</span> 명단·역할 관리
+        </button>
+      </div>
+    </header>
+
+    <!-- 대시보드 및 컨트롤 바 -->
+    <section class="dashboard-bar">
+      <div class="dashboard-row-main">
+        <div class="cta-group">
+          <!-- 메인 배정하기 버튼 -->
+          <button class="btn-roll" onclick="assignRoles()">
+            <span>🎲</span> 역할 배정하기
+          </button>
+          
+          <div id="statusSummary" class="status-summary">
+            <!-- 자바스크립트로 동적 갱신됨 -->
+            <span class="status-badge">
+              <span>📋</span> 학생 26명 · 역할 26개 (배정 대기중)
+            </span>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button id="soundToggleBtn" class="sound-toggle-btn" onclick="toggleSound()">
+            🔔 소리 켜짐
+          </button>
+        </div>
+      </div>
+
+      <!-- 보조 컨트롤: 검색, 보기 전환, 빠른 복사 -->
+      <div class="dashboard-sub-bar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="학생 이름 또는 역할 검색..." />
+        </div>
+
+        <div class="view-controls">
+          <div class="view-toggle">
+            <button id="viewCardBtn" class="view-btn active" onclick="setViewMode('card')">🎴 카드형</button>
+            <button id="viewTableBtn" class="view-btn" onclick="setViewMode('table')">📋 목록형</button>
+          </div>
+
+          <button class="btn btn-secondary" style="padding: 7px 12px; font-size: 13px;" onclick="copyToClipboardTable()" title="엑셀이나 구글 스프레드시트에 바로 붙여넣기(Ctrl+V)">
+            📋 표 복사
+          </button>
+          <button class="btn btn-secondary" style="padding: 7px 12px; font-size: 13px;" onclick="downloadCSV()" title="엑셀 호환 CSV 파일 다운로드">
+            📥 CSV 다운로드
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 역할 배정 결과 카드 그리드 -->
+    <main>
+      <div id="roleGrid" class="role-grid">
+        <!-- script.js에 의해 동적으로 26개 카드가 렌더링됩니다 -->
+      </div>
+
+      <!-- 목록형 테이블 뷰 (선택 시 표시) -->
+      <div id="roleTableContainer" class="role-table-container" style="display: none;">
+        <table class="role-table">
+          <thead>
+            <tr>
+              <th>번호</th>
+              <th>학생 이름</th>
+              <th>담당 역할</th>
+              <th>주요 활동 및 다짐</th>
+              <th style="text-align: right;">관리</th>
+            </tr>
+          </thead>
+          <tbody id="roleTableBody">
+            <!-- script.js 렌더링 -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- 🖨️ A4 교실 게시판 부착용 인쇄 전용 영역 -->
+    <!-- (화면에서는 숨겨지고 인쇄 시에만 깔끔하게 출력) -->
+    <!-- ========================================== -->
+    <div class="print-header">
+      <h2 id="printClassTitle">우리 반 1인 1역할 안내판</h2>
+      <div class="print-meta-info">
+        <span id="printCurrentDate">배정일: 2026년 3월 1일</span>
+        <span>✨ 행복하고 아름다운 우리 교실 함께 가꾸기 ✨</span>
+        <span>담임교사 확인: (인)</span>
+      </div>
+    </div>
+
+    <div class="print-table-container">
+      <table class="print-role-table">
+        <thead>
+          <tr>
+            <th style="width: 38px;">번호</th>
+            <th style="width: 80px;">이름</th>
+            <th style="width: 140px;">담당 역할</th>
+            <th>주요 활동 내용</th>
+            <th style="width: 50px;">확인</th>
+          </tr>
+        </thead>
+        <tbody id="printRoleTableBody">
+          <!-- script.js에서 인쇄용 표 자동 생성 -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="print-footer">
+      <p>※ 우리 모두가 맡은 자리에서 최선을 다할 때 우리 반이 가장 빛납니다! 💖</p>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 🔄 구글 스프레드시트 (Apps Script) 연동 모달 -->
+  <!-- ========================================== -->
+  <div id="sheetModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>📊</span> 구글 스프레드시트 연동 안내
+        </h3>
+        <button class="modal-close-btn" onclick="closeModal('sheetModal')">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div style="font-size: 14px; font-weight: 600; color: var(--primary);" id="sheetModalMode">
+          구글 스프레드시트(Apps Script) 연동 준비
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="appsScriptUrl">Google Apps Script 웹 앱 URL</label>
+          <input 
+            type="text" 
+            id="appsScriptUrl" 
+            class="form-input" 
+            placeholder="https://script.google.com/macros/s/.../exec" 
+          />
+          <span style="font-size: 11px; color: var(--text-subtle);">
+            * 구글 시트에서 [확장 프로그램] → [Apps Script]로 배포한 Web App URL을 입력하면 자동으로 브라우저에 기억됩니다.
+          </span>
+        </div>
+
+        <div class="guide-box">
+          <strong>💡 다음 단계 연결 방법 (간단 3단계):</strong>
+          <ol>
+            <li>구글 드라이브에서 새 스프레드시트를 만듭니다.</li>
+            <li>상단 메뉴 <strong>[확장 프로그램] → [Apps Script]</strong>를 클릭합니다.</li>
+            <li>아래 예시 코드를 붙여넣고 <strong>[배포] → [새 배포] → 웹 앱(액세스: 모든 사용자)</strong>으로 배포합니다.</li>
+          </ol>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+            <label class="form-label">Apps Script 붙여넣기용 템플릿 코드</label>
+          </div>
+          <div class="code-box">
+            <button class="btn-copy-code" onclick="navigator.clipboard.writeText(document.getElementById('scriptTemplateCode').innerText); showToast('코드가 클립보드에 복사되었습니다!');">
+              코드 복사
+            </button>
+            <pre id="scriptTemplateCode"><code>// 1인 1역할 구글 시트 연동 스크립트
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  // A열: 학생 이름, B열: 역할명, C열: 역할설명
+  var students = [];
+  var roles = [];
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0]) students.push(data[i][0]);
+    if (data[i][1]) roles.push({ icon: "⭐", title: data[i][1], desc: data[i][2] || "" });
+  }
+  return ContentService.createTextOutput(JSON.stringify({ students: students, roles: roles }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var params = JSON.parse(e.postData.contents);
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName("배정결과") || ss.insertSheet("배정결과");
+  sheet.clear();
+  sheet.appendRow(["번호", "학생 이름", "담당 역할", "역할 설명"]);
+  params.assignments.forEach(function(row) {
+    sheet.appendRow([row.index, row.student, row.role, row.desc]);
+  });
+  return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+          </div>
+        </div>
+
+        <!-- 즉시 활용 대안: 스프레드시트에 바로 붙여넣기 기능 -->
+        <div style="background: #f8fafc; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0;">
+          <div style="font-weight: 600; font-size: 13px; margin-bottom: 6px;">
+            ⚡ 스크립트 배포 없이 바로 시트와 주고받기:
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-secondary" style="font-size: 12px;" onclick="copyToClipboardTable()">
+              📋 표 복사 (시트에 Ctrl+V)
+            </button>
+            <button class="btn btn-secondary" style="font-size: 12px;" onclick="downloadCSV()">
+              📥 CSV 파일 다운로드
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('sheetModal')">닫기</button>
+        <button class="btn btn-sheet-load" onclick="executeSheetLoad()">🔄 시트에서 불러오기</button>
+        <button class="btn btn-sheet-save" onclick="executeSheetSave()">💾 시트에 결과 저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- ⚙️ 명단 및 역할 관리 모달 -->
+  <!-- ========================================== -->
+  <div id="editorModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span>⚙️</span> 학생 명단 및 역할 목록 편집
+        </h3>
+        <button class="modal-close-btn" onclick="closeModal('editorModal')">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="countCheckBanner" class="count-check-banner matched">
+          <span>✔️ 인원 수 일치!</span>
+          <span>학생 26명 = 역할 26개</span>
+        </div>
+
+        <div class="editor-cols">
+          <!-- 학생 명단 편집 -->
+          <div class="form-group">
+            <label class="form-label" for="editorStudents">
+              👦👧 학생 명단 (한 줄에 한 명씩)
+            </label>
+            <textarea id="editorStudents" class="form-textarea" placeholder="1. 강민우&#10;2. 김서연..."></textarea>
+            <span style="font-size: 11px; color: var(--text-subtle);">
+              * 엑셀에서 학생 명단을 복사해 그대로 붙여넣으셔도 됩니다.
+            </span>
+          </div>
+
+          <!-- 역할 목록 편집 -->
+          <div class="form-group">
+            <label class="form-label" for="editorRoles">
+              🌟 역할 목록 (아이콘 | 역할명 | 활동설명)
+            </label>
+            <textarea id="editorRoles" class="form-textarea" placeholder="🧹 | 칠판 도우미 | 수업 전후 칠판 닦기"></textarea>
+            <span style="font-size: 11px; color: var(--text-subtle);">
+              * '아이콘 | 역할명 | 설명' 형식으로 입력하세요.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="resetToDefault()">기본값(26명) 복원</button>
+        <button class="btn btn-secondary" onclick="closeModal('editorModal')">취소</button>
+        <button class="btn btn-primary" onclick="saveEditorChanges()">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림창 -->
+  <div id="toast" class="toast">알림 메시지</div>
+
+  <!-- 스크립트 로드 -->
+  <script src="./script.js"></script>
+</body>
+</html>
