@@ -1,9 +1,9 @@
 /**
- * 🌿 지브리 감성 숲속 마을 1인 1역할 배정기 (Class 1-Person 1-Role Matcher)
- * 역할 랜덤 매칭, 동물 파트너, A4 인쇄, 구글 스프레드시트 연동 준비 로직
+ * 🎬 CLASSFLIX (넷플릭스 스타일 우리 반 1인 1역할 배정 시스템)
+ * 역할 랜덤 매칭, TUDUM 사운드 효과, A4 인쇄, 구글 스프레드시트 연동
  */
 
-// 1. 기본 세팅 예시 데이터 (학생 26명 & 숲속 동물 짝꿍 역할 26개)
+// 1. 기본 세팅 예시 데이터 (학생 26명 & 1인 1역할 26개 - 동물 제외 순수 역할)
 const DEFAULT_STUDENTS = [
   "1. 강민우", "2. 김서연", "3. 김도윤", "4. 김하은",
   "5. 박지후", "6. 박예은", "7. 이준우", "8. 이서아",
@@ -15,71 +15,115 @@ const DEFAULT_STUDENTS = [
 ];
 
 const DEFAULT_ROLES = [
-  { icon: "🦝", animal: "너구리 반장", title: "칠판 도우미", desc: "물걸레로 칠판을 닦아 맑은 밤하늘처럼 깨끗하게 만들어요." },
-  { icon: "🐻", animal: "숲속 아기곰", title: "우유·급식 도우미", desc: "친구들이 차례차례 급식 줄을 서도록 든든하게 안내해요." },
-  { icon: "🦉", animal: "지혜의 부엉이", title: "에너지 지킴이", desc: "쉬는 시간과 이동 수업 때 전등과 냉난방기 전원을 살펴요." },
-  { icon: "🕊️", animal: "산들바람 아기새", title: "창문 환기 대장", desc: "솔솔 불어오는 맑은 숲바람이 교실에 통하게 환기해요." },
-  { icon: "🐿️", animal: "다람쥐 사서", title: "도서 정리 요정", desc: "도토리 모으듯 학급문고 책을 번호순으로 반듯하게 꽂아요." },
-  { icon: "🦔", animal: "꼼꼼이 고슴도치", title: "게시판 관리관", desc: "가정통신문과 친구들의 멋진 그림 작품을 구김 없이 정돈해요." },
-  { icon: "🐰", animal: "깡충이 토끼", title: "신발장 정리왕", desc: "실내화와 운동화가 가지런히 줄 맞춰 쉴 수 있게 도와줘요." },
-  { icon: "🦫", animal: "부지런한 비버", title: "분리수거 대장", desc: "종이, 플라스틱, 캔이 알맞은 곳에 가도록 도와줘요." },
-  { icon: "🦦", animal: "깔끔이 수달", title: "청소도구 관리사", desc: "빗자루와 쓰레받기, 걸레를 걸이대에 나란히 모아둬요." },
-  { icon: "🦌", animal: "숲속 아기사슴", title: "식물 사랑이", desc: "화분 친구들에게 촉촉하게 물을 주고 따스한 햇빛을 쬐어줘요." },
-  { icon: "🦊", animal: "총명한 아기여우", title: "컴퓨터·TV 도우미", desc: "수업용 전자칠판과 TV, 무선 마우스 충전 상태를 챙겨요." },
-  { icon: "🐶", animal: "다정 멍멍이", title: "보건·체온 지킴이", desc: "구급함을 점검하고 아픈 친구 손을 잡고 보건실에 가요." },
-  { icon: "🐒", animal: "날쌘돌이 원숭이", title: "체육 기구 반장", desc: "체육 시간 축구공과 줄넘기를 챙겨 나가고 바르게 반납해요." },
-  { icon: "🐓", animal: "아침 알림 닭", title: "시간 알리미", desc: "수업 종이 울리면 친구들에게 바른 착석을 부드럽게 알려요." },
-  { icon: "🐱", animal: "살금살금 고양이", title: "출석부 도우미", desc: "아침 출석부를 단정히 챙겨 선생님께 공손히 전달해요." },
-  { icon: "🐹", animal: "볼빵빵 햄스터", title: "알림장 도우미", desc: "칠판 알림장을 또박또박 확인하고 친구들의 필기를 도와줘요." },
-  { icon: "🐢", animal: "차분한 거북이", title: "책상 줄 지킴이", desc: "모둠 책상과 의자 줄이 반듯한 직선이 되도록 맞춰요." },
-  { icon: "🐸", animal: "촉촉 개구리", title: "우산꽂이 도우미", desc: "비나 눈이 오는 날 우산이 엉키지 않게 가지런히 꽂아둬요." },
-  { icon: "🦡", animal: "눈썰미 오소리", title: "분실물 지킴이", desc: "바닥에 떨어진 연필과 지우개를 분실물 바구니에 모아요." },
-  { icon: "🐦", animal: "노래하는 파랑새", title: "음악 DJ 요정", desc: "아침 자습과 청소 시간에 활기찬 지브리 숲속 음악을 틀어요." },
-  { icon: "🐝", animal: "붕붕이 꿀벌", title: "인쇄물 배부관", desc: "학습지와 안내장을 모둠별로 꽃가루 나르듯 빠르게 나눠줘요." },
-  { icon: "🐧", animal: "마음 따뜻 펭귄", title: "칭찬 배달부", desc: "친구들의 따뜻한 칭찬 쪽지와 칭찬 스티커 판을 가꿔요." },
-  { icon: "🦭", animal: "보송보송 물개", title: "손소독 도우미", desc: "손 소독제와 핸드타월을 챙기고 비누 손씻기를 격려해요." },
-  { icon: "🐨", animal: "포근한 코알라", title: "사물함 점검관", desc: "사물함 문이 꼭 닫히고 위에 짐이 없도록 단정히 살펴줘요." },
-  { icon: "🐼", animal: "듬직한 판다", title: "안전 지킴이", desc: "복도와 계단에서 사뿐사뿐 걷도록 친구들을 지켜줘요." },
-  { icon: "🦁", animal: "용기 있는 사자", title: "행복 이끎이", desc: "선생님을 돕고 모둠 토의 시간을 따뜻하게 이끌어요." }
+  { icon: "🧹", title: "칠판 도우미", desc: "수업 전후 칠판을 물걸레로 깨끗하게 닦고 지우개를 털어요." },
+  { icon: "🥛", title: "우유·급식 도우미", desc: "급식 줄서기를 바르게 안내하고 우유 상자를 깔끔히 정리해요." },
+  { icon: "💡", title: "에너지 지킴이", desc: "쉬는 시간과 이동 수업 시 조명과 냉난방기 전원을 확인해요." },
+  { icon: "🪟", title: "창문 환기 대장", desc: "중간놀이와 점심시간에 창문을 열어 교실 공기를 맑게 해요." },
+  { icon: "📚", title: "도서 관리관", desc: "학급 문고 책꽂이의 책을 번호대로 반듯하게 정돈해요." },
+  { icon: "📌", title: "게시판 디렉터", desc: "가정통신문 및 친구들의 멋진 작품 게시판을 깔끔히 가꿔요." },
+  { icon: "👟", title: "신발장 정리왕", desc: "친구들의 실내화와 운동화가 가지런히 놓이도록 살펴요." },
+  { icon: "♻️", title: "분리수거 대장", desc: "종이, 플라스틱, 캔 분리수거함이 올바르게 쓰이는지 점검해요." },
+  { icon: "🧽", title: "환경미화 관리사", desc: "빗자루와 쓰레받기, 걸레를 걸이대에 가지런히 정리해요." },
+  { icon: "🌿", title: "식물 가꾸기", desc: "교실 화분에 시기에 맞춰 물을 주고 따뜻한 햇빛을 쬐어줘요." },
+  { icon: "💻", title: "미디어·TV 도우미", desc: "수업용 전자칠판과 TV, 무선 마우스 충전 상태를 관리해요." },
+  { icon: "🩹", title: "보건·체온 지킴이", desc: "비상 구급함을 확인하고 아픈 친구가 있으면 보건실을 안내해요." },
+  { icon: "⚽", title: "체육 교구 반장", desc: "체육 시간 전 축구공, 줄넘기 등 체육 교구를 챙기고 반납해요." },
+  { icon: "⏰", title: "시간 알리미", desc: "수업 시작 1분 전 종이 울리면 친구들에게 착석을 안내해요." },
+  { icon: "📋", title: "출석부 도우미", desc: "아침 출석부 상태를 점검하고 선생님께 전달해 드려요." },
+  { icon: "📝", title: "알림장 도우미", desc: "칠판 알림장 글씨를 바르게 정돈하고 친구들의 필기를 도와요." },
+  { icon: "📐", title: "책상 줄 지킴이", desc: "모둠 책상과 의자 줄이 반듯하게 맞추어져 있는지 살펴요." },
+  { icon: "☂️", title: "우산꽂이 도우미", desc: "비나 눈이 오는 날 우산이 엉키지 않게 가지런히 정리해요." },
+  { icon: "🔍", title: "분실물 센터장", desc: "바닥에 떨어진 연필, 지우개 등 임자 없는 물건을 분실물함에 보관해요." },
+  { icon: "🎵", title: "BGM 사운드 DJ", desc: "아침 등교 시간과 청소 시간에 활기찬 배경음악을 켜요." },
+  { icon: "📄", title: "학습지 배부관", desc: "학습지와 안내장을 모둠별 인원수대로 신속하게 전달해요." },
+  { icon: "💌", title: "칭찬 배달부", desc: "친구들의 따뜻한 칭찬 쪽지와 칭찬 스티커 판을 관리해요." },
+  { icon: "🧴", title: "위생·손소독 도우미", desc: "손 소독제와 핸드타월 잔량을 확인하고 청결을 독려해요." },
+  { icon: "🗄️", title: "사물함 점검관", desc: "사물함 문이 열려 있거나 위에 짐이 쌓이지 않도록 살펴요." },
+  { icon: "🛡️", title: "안전 지킴이", desc: "복도나 교실에서 뛰거나 장난치는 친구를 부드럽게 말려요." },
+  { icon: "👑", title: "총괄 행복 리더", desc: "선생님의 수업 진행을 돕고 모둠 토의 시간을 이끌어요." }
 ];
 
 // 2. 애플리케이션 상태 (State)
 let students = JSON.parse(localStorage.getItem('class_students')) || [...DEFAULT_STUDENTS];
-// 기본 역할에 동물 데이터가 누락되어 있을 경우 DEFAULT_ROLES로 자동 보정
-let roles = JSON.parse(localStorage.getItem('class_roles')) || JSON.parse(JSON.stringify(DEFAULT_ROLES));
-if (!roles[0] || !roles[0].animal) {
-  roles = JSON.parse(JSON.stringify(DEFAULT_ROLES));
-  localStorage.setItem('class_roles', JSON.stringify(roles));
-}
+// 동물 데이터가 포함된 이전 캐시가 있다면 깔끔한 DEFAULT_ROLES로 자동 갱신
+let storedRoles = JSON.parse(localStorage.getItem('class_roles'));
+let roles = (storedRoles && !storedRoles[0]?.animal) ? storedRoles : JSON.parse(JSON.stringify(DEFAULT_ROLES));
+localStorage.setItem('class_roles', JSON.stringify(roles));
 
 let assignments = JSON.parse(localStorage.getItem('class_assignments')) || [];
+// assignments에도 animal이 포함되어 있다면 정리
+if (assignments[0]?.role?.animal) {
+  assignments = [];
+  localStorage.removeItem('class_assignments');
+}
+
 let currentView = 'card'; // 'card' | 'table'
 let soundEnabled = localStorage.getItem('class_sound') !== 'false';
 let swapSourceIndex = null;
 
-// 지브리 오르골 풍 사운드 효과 (Web Audio API)
-const playChimeSound = () => {
+// 🔊 넷플릭스 시그니처 "두둥 (TUDUM)" 사운드 효과 (Web Audio API)
+const playTudumSound = () => {
   if (!soundEnabled) return;
   try {
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     if (!AudioContext) return;
     const ctx = new AudioContext();
-    // E4, G4, B4, E5, G5 (따뜻한 오르골/카림바 아르페지오)
-    const notes = [329.63, 392.00, 493.88, 659.25, 783.99];
-    notes.forEach((freq, idx) => {
+
+    const t = ctx.currentTime;
+
+    // 1. 묵직한 서브 베이스 펀치 (Thud)
+    const subOsc = ctx.createOscillator();
+    const subGain = ctx.createGain();
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(80, t);
+    subOsc.frequency.exponentialRampToValueAtTime(35, t + 0.35);
+    subGain.gain.setValueAtTime(0.4, t);
+    subGain.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+    subOsc.connect(subGain);
+    subGain.connect(ctx.destination);
+    subOsc.start(t);
+    subOsc.stop(t + 0.65);
+
+    // 2. 넷플릭스 특유의 드라마틱한 첼로/브라스 스웰 (TUDUM 화음)
+    const chordFrequencies = [110, 164.81, 220, 329.63]; // A2, E3, A3, E4
+    chordFrequencies.forEach((freq, idx) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const startTime = ctx.currentTime + idx * 0.09;
-      gain.gain.setValueAtTime(0.001, startTime);
-      gain.gain.exponentialRampToValueAtTime(0.18, startTime + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.55);
-      osc.connect(gain);
+      const filter = ctx.createBiquadFilter();
+
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t + 0.05);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(450, t);
+      filter.frequency.exponentialRampToValueAtTime(1400, t + 0.25);
+      filter.frequency.exponentialRampToValueAtTime(250, t + 1.2);
+
+      gain.gain.setValueAtTime(0.001, t + 0.05);
+      gain.gain.linearRampToValueAtTime(0.12, t + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 1.25);
+
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(ctx.destination);
-      osc.start(startTime);
-      osc.stop(startTime + 0.6);
+
+      osc.start(t + 0.05);
+      osc.stop(t + 1.3);
     });
+
+    // 3. 고음 메탈릭 잔향 (Shimmer)
+    const highOsc = ctx.createOscillator();
+    const highGain = ctx.createGain();
+    highOsc.type = 'triangle';
+    highOsc.frequency.setValueAtTime(880, t + 0.1);
+    highGain.gain.setValueAtTime(0.001, t + 0.1);
+    highGain.gain.linearRampToValueAtTime(0.05, t + 0.25);
+    highGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+    highOsc.connect(highGain);
+    highGain.connect(ctx.destination);
+    highOsc.start(t + 0.1);
+    highOsc.stop(t + 0.95);
+
   } catch (e) {
     console.warn("Audio context not supported", e);
   }
@@ -92,14 +136,13 @@ function assignRoles() {
     return;
   }
 
-  // 역할 복사 및 셔플
+  // 셔플
   const shuffledRoles = [...roles];
   for (let i = shuffledRoles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledRoles[i], shuffledRoles[j]] = [shuffledRoles[j], shuffledRoles[i]];
   }
 
-  // 1:1 매칭
   const newAssignments = [];
   const count = Math.min(students.length, shuffledRoles.length);
 
@@ -110,12 +153,11 @@ function assignRoles() {
     });
   }
 
-  // 만약 학생 수가 역할보다 많으면 나머지 학생은 '숲속 자율 협력 도우미' 배정
   if (students.length > shuffledRoles.length) {
     for (let i = count; i < students.length; i++) {
       newAssignments.push({
         student: students[i],
-        role: { icon: "🐾", animal: "숲속 나그네", title: "자율 협력 도우미", desc: "친구들의 역할을 함께 거들고 돕는 든든한 숲속 수호천사예요." }
+        role: { icon: "🤝", title: "스페셜 서포터", desc: "친구들의 역할을 함께 지원하며 완벽한 시즌을 이끄는 조력자예요." }
       });
     }
   }
@@ -123,13 +165,13 @@ function assignRoles() {
   assignments = newAssignments;
   localStorage.setItem('class_assignments', JSON.stringify(assignments));
 
-  playChimeSound();
+  playTudumSound();
   launchConfetti();
   renderApp();
-  showToast(`🍃 숲속 동물 짝꿍 26명의 1인 1역할이 배정되었습니다!`);
+  showToast(`두둥! 🎬 학생 26명의 1인 1역할 배정이 완료되었습니다!`);
 }
 
-// 4. 화면 렌더링 함수
+// 4. 화면 렌더링
 function renderApp() {
   updateStatusSummary();
   renderCardGrid();
@@ -137,7 +179,6 @@ function renderApp() {
   renderPrintTable();
 }
 
-// 상태 뱃지 업데이트
 function updateStatusSummary() {
   const countEl = document.getElementById('statusSummary');
   const studentCount = students.length;
@@ -148,20 +189,20 @@ function updateStatusSummary() {
     if (assignedCount > 0) {
       countEl.innerHTML = `
         <span class="status-badge matched">
-          <span>🌿</span> 배정 완료: ${assignedCount}명 (${studentCount}명 기준)
+          <span style="color: var(--netflix-red); font-weight: 900;">N</span> 시즌 2026 캐스팅 완료: ${assignedCount}명 (${studentCount}명 기준)
         </span>
       `;
     } else {
       countEl.innerHTML = `
         <span class="status-badge">
-          <span>📋</span> 학생 ${studentCount}명 · 숲속 역할 ${roleCount}개 (배정 대기중)
+          <span>🎬</span> 총 학생 ${studentCount}명 · 1인 1역할 ${roleCount}개 (방영 대기중)
         </span>
       `;
     }
   }
 }
 
-// 카드 그리드 렌더링
+// 넷플릭스 포스터 카드 렌더링
 function renderCardGrid() {
   const gridEl = document.getElementById('roleGrid');
   const searchQuery = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
@@ -169,34 +210,34 @@ function renderCardGrid() {
 
   if (assignments.length === 0) {
     gridEl.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #fcfaf5; border-radius: 20px; border: 2px dashed #d5c8b2;">
-        <div style="font-size: 52px; margin-bottom: 12px;">🌿 🐾 🌰</div>
-        <h3 style="font-family: var(--font-title); font-size: 22px; color: var(--forest-deep); margin-bottom: 8px;">
-          숲속 마을 1인 1역할 배정소에 오신 것을 환영합니다
+      <div style="grid-column: 1 / -1; text-align: center; padding: 70px 20px; background: #1a1a1a; border-radius: 12px; border: 1px dashed #333333;">
+        <div style="font-family: var(--font-logo); font-size: 56px; color: var(--netflix-red); margin-bottom: 8px;">CLASSFLIX</div>
+        <h3 style="font-size: 22px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">
+          아직 역할이 캐스팅되지 않았습니다
         </h3>
-        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 22px;">
-          상단의 <strong>[🎲 숲속 역할 배정하기]</strong> 버튼을 누르면 26마리 동물 친구들과 함께 신나게 역할을 맡게 돼요!
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">
+          상단의 <strong>[▶ 역할 배정하기]</strong>를 누르면 넷플릭스 오리지널 캐스팅이 시작됩니다!
         </p>
-        <button class="btn btn-primary" onclick="assignRoles()">지금 배정하기 🍃</button>
+        <button class="btn btn-primary" onclick="assignRoles()" style="font-size: 15px; padding: 12px 28px;">
+          ▶ 지금 캐스팅 시작
+        </button>
       </div>
     `;
     return;
   }
 
-  // 검색 필터 적용
-  const filtered = assignments.filter((item, idx) => {
+  const filtered = assignments.filter((item) => {
     if (!searchQuery) return true;
     const sName = (item.student || '').toLowerCase();
     const rTitle = (item.role?.title || '').toLowerCase();
     const rDesc = (item.role?.desc || '').toLowerCase();
-    const rAnimal = (item.role?.animal || '').toLowerCase();
-    return sName.includes(searchQuery) || rTitle.includes(searchQuery) || rDesc.includes(searchQuery) || rAnimal.includes(searchQuery);
+    return sName.includes(searchQuery) || rTitle.includes(searchQuery) || rDesc.includes(searchQuery);
   });
 
   if (filtered.length === 0) {
     gridEl.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: white; border-radius: 14px; border: 1.5px solid #e7dfd0;">
-        <p style="color: var(--text-muted); font-size: 14px;">'${searchQuery}'에 해당하는 학생이나 동물 역할을 찾을 수 없습니다.</p>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; background: #1a1a1a; border-radius: 12px; border: 1px solid #333;">
+        <p style="color: var(--text-muted); font-size: 14px;">'${searchQuery}'에 해당하는 학생이나 역할을 찾을 수 없습니다.</p>
       </div>
     `;
     return;
@@ -208,43 +249,51 @@ function renderCardGrid() {
     const name = match ? match[2] : item.student;
     const isSwapping = swapSourceIndex === index;
     const animDelay = (index * 0.035).toFixed(3);
-    const animalName = item.role.animal || '숲속 친구';
+    const matchPercentage = 95 + ((index * 3) % 5); // 95% ~ 99% 일치
 
     return `
-      <div class="role-card scale-up-card" style="animation-delay: ${animDelay}s; ${isSwapping ? 'border: 2px solid var(--forest-leaf); background: #f0f7f2;' : ''}">
-        <div class="card-header">
+      <div class="role-card scale-up-card" style="animation-delay: ${animDelay}s; ${isSwapping ? 'border: 2px solid var(--netflix-red); box-shadow: 0 0 20px rgba(229, 9, 20, 0.6);' : ''}">
+        <div class="card-top-banner">
           <div class="student-identity">
-            <span class="student-no">${num}</span>
+            <span class="student-badge-n">N</span>
+            <span class="student-no">NO.${num}</span>
             <span class="student-name">${escapeHtml(name)}</span>
           </div>
           <div class="card-actions">
-            <button class="btn-icon-mini" title="다른 친구와 역할 맞바꾸기" onclick="toggleSwap(${index})">
+            <button class="btn-icon-mini" title="다른 학생과 역할 맞바꾸기" onclick="toggleSwap(${index})">
               ${isSwapping ? '❌ 취소' : '🔄 맞교환'}
             </button>
           </div>
         </div>
 
-        <div class="role-content">
-          <div class="role-icon">${item.role.icon || '🐾'}</div>
-          <div class="role-info">
-            <div class="animal-partner-tag">
-              <span>🐾 짝꿍: ${escapeHtml(animalName)}</span>
+        <div class="card-body-content">
+          <div class="role-header-line">
+            <div class="match-score">
+              <span>●</span> ${matchPercentage}% 일치
             </div>
-            <div class="role-title">${escapeHtml(item.role.title)}</div>
-            <div class="role-desc">${escapeHtml(item.role.desc)}</div>
+            <div class="episode-tag">
+              EP.${num}
+            </div>
           </div>
+
+          <div class="role-title-box">
+            <div class="role-icon">${item.role.icon || '⭐'}</div>
+            <div class="role-title">${escapeHtml(item.role.title)}</div>
+          </div>
+
+          <div class="role-desc">${escapeHtml(item.role.desc)}</div>
         </div>
 
         <div class="card-footer">
-          <span class="badge-tag">숲속 배움터</span>
-          <span style="color: var(--forest-green); font-weight: 700;">도토리 모으듯 성실히 🌰</span>
+          <span class="netflix-badge">CLASSFLIX ORIGINAL</span>
+          <span style="font-weight: 700; color: #46d369;">주연 배정 완료 ★</span>
         </div>
       </div>
     `;
   }).join('');
 }
 
-// 테이블 목록 뷰 렌더링
+// 목록형 테이블 뷰
 function renderTableList() {
   const tableContainer = document.getElementById('roleTableContainer');
   const tableBody = document.getElementById('roleTableBody');
@@ -259,18 +308,15 @@ function renderTableList() {
   tableBody.innerHTML = assignments.map((item, index) => {
     return `
       <tr>
-        <td style="font-weight: 700; color: var(--wood-dark); width: 60px;">${index + 1}</td>
-        <td style="font-weight: 700; width: 140px; color: var(--forest-deep);">${escapeHtml(item.student)}</td>
-        <td style="font-weight: 700; color: var(--wood-warm); width: 140px;">
-          <span style="font-size: 16px; margin-right: 4px;">${item.role.icon}</span>${escapeHtml(item.role.animal || '')}
-        </td>
-        <td style="font-weight: 700; color: var(--text-main); width: 160px;">
-          ${escapeHtml(item.role.title)}
+        <td style="font-weight: 800; color: var(--netflix-red); width: 60px;">${index + 1}</td>
+        <td style="font-weight: 800; width: 140px; color: #ffffff;">${escapeHtml(item.student)}</td>
+        <td style="font-weight: 800; color: #ffffff; width: 180px;">
+          <span style="font-size: 16px; margin-right: 6px;">${item.role.icon}</span>${escapeHtml(item.role.title)}
         </td>
         <td style="color: var(--text-muted); font-size: 13px;">${escapeHtml(item.role.desc)}</td>
         <td style="text-align: right; width: 90px;">
           <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 12px;" onclick="toggleSwap(${index})">
-            바꾸기
+            맞교환
           </button>
         </td>
       </tr>
@@ -278,7 +324,7 @@ function renderTableList() {
   }).join('');
 }
 
-// 인쇄 전용 2열 A4 표 렌더링
+// 인쇄 전용 2열 A4 표 (토너 절약을 위해 화이트/블랙 고대비)
 function renderPrintTable() {
   const printTableBody = document.getElementById('printRoleTableBody');
   const printDateEl = document.getElementById('printCurrentDate');
@@ -286,12 +332,12 @@ function renderPrintTable() {
   const classTitleInput = document.getElementById('classTitleInput');
 
   if (printTitleEl && classTitleInput) {
-    printTitleEl.textContent = classTitleInput.value || '우리 반 숲속 1인 1역할 안내판';
+    printTitleEl.textContent = classTitleInput.value || 'CLASSFLIX 우리 반 1인 1역할 편성표';
   }
 
   if (printDateEl) {
     const today = new Date();
-    printDateEl.textContent = `배정일: ${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+    printDateEl.textContent = `편성일: ${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
   }
 
   if (!printTableBody) return;
@@ -303,12 +349,11 @@ function renderPrintTable() {
     const item = assignments[i];
     rows.push(`
       <tr>
-        <td class="center" style="width: 36px; font-weight: bold;">${i + 1}</td>
-        <td class="center" style="width: 75px; font-weight: bold;">${escapeHtml(item.student.replace(/^\d+[\.\s]+/, ''))}</td>
-        <td class="center" style="width: 100px; font-weight: bold;">${item.role.icon} ${escapeHtml(item.role.animal || '')}</td>
-        <td class="role-name" style="width: 120px;">${escapeHtml(item.role.title)}</td>
+        <td class="center" style="width: 38px; font-weight: bold;">${i + 1}</td>
+        <td class="center" style="width: 80px; font-weight: bold;">${escapeHtml(item.student.replace(/^\d+[\.\s]+/, ''))}</td>
+        <td class="role-name" style="width: 130px;">${item.role.icon} ${escapeHtml(item.role.title)}</td>
         <td style="font-size: 9pt;">${escapeHtml(item.role.desc)}</td>
-        <td class="center" style="width: 48px; color: #888;">[ 확인 ]</td>
+        <td class="center" style="width: 50px; color: #777;">[ 확인 ]</td>
       </tr>
     `);
   }
@@ -316,11 +361,11 @@ function renderPrintTable() {
   printTableBody.innerHTML = rows.join('');
 }
 
-// 5. 역할 맞교환 (Swap) 기능
+// 역할 맞교환
 function toggleSwap(index) {
   if (swapSourceIndex === null) {
     swapSourceIndex = index;
-    showToast(`🔄 [${assignments[index].student}] 학생의 역할을 선택했습니다. 바꿀 다른 친구 카드를 클릭하세요.`);
+    showToast(`🔄 [${assignments[index].student}] 학생을 선택했습니다. 역할을 맞바꿀 다른 카드를 클릭하세요.`);
     renderApp();
   } else if (swapSourceIndex === index) {
     swapSourceIndex = null;
@@ -337,11 +382,10 @@ function toggleSwap(index) {
     swapSourceIndex = null;
     localStorage.setItem('class_assignments', JSON.stringify(assignments));
     renderApp();
-    showToast(`🍃 [${student1}] ↔ [${student2}] 역할이 서로 교환되었습니다!`);
+    showToast(`🎬 [${student1}] ↔ [${student2}] 캐스팅이 서로 맞교환되었습니다!`);
   }
 }
 
-// 6. 뷰 모드 토글
 function setViewMode(mode) {
   currentView = mode;
   document.getElementById('viewCardBtn')?.classList.toggle('active', mode === 'card');
@@ -360,7 +404,6 @@ function setViewMode(mode) {
   renderApp();
 }
 
-// 7. 인쇄하기 함수
 function triggerPrint() {
   if (assignments.length === 0) {
     if (confirm("아직 역할 배정이 되지 않았습니다. 지금 바로 배정하고 인쇄하시겠습니까?")) {
@@ -373,7 +416,7 @@ function triggerPrint() {
   window.print();
 }
 
-// 8. 명단 및 역할 관리 모달
+// 8. 명단 및 역할 관리
 function openEditorModal() {
   const modal = document.getElementById('editorModal');
   const studentsArea = document.getElementById('editorStudents');
@@ -383,7 +426,7 @@ function openEditorModal() {
     studentsArea.value = students.join('\n');
   }
   if (rolesArea) {
-    rolesArea.value = roles.map(r => `${r.icon || '🐾'} | ${r.animal || '동물친구'} | ${r.title} | ${r.desc || ''}`).join('\n');
+    rolesArea.value = roles.map(r => `${r.icon || '⭐'} | ${r.title} | ${r.desc || ''}`).join('\n');
   }
 
   updateEditorCountCheck();
@@ -422,19 +465,11 @@ function saveEditorChanges() {
     .split('\n')
     .map(line => {
       const parts = line.split('|').map(p => p.trim());
-      if (parts.length >= 3) {
+      if (parts.length >= 2) {
         return {
-          icon: parts[0] || '🐾',
-          animal: parts[1] || '숲속 친구',
-          title: parts[2] || '학급 도우미',
-          desc: parts[3] || ''
-        };
-      } else if (parts.length === 2) {
-        return {
-          icon: parts[0] || '🐾',
-          animal: '숲속 친구',
+          icon: parts[0] || '⭐',
           title: parts[1] || '학급 도우미',
-          desc: ''
+          desc: parts[2] || ''
         };
       }
       return null;
@@ -452,19 +487,19 @@ function saveEditorChanges() {
   localStorage.setItem('class_roles', JSON.stringify(roles));
 
   closeModal('editorModal');
-  showToast(`💾 숲속 명단 저장 완료: 학생 ${students.length}명, 역할 ${roles.length}개`);
+  showToast(`💾 캐스팅 명단 저장 완료: 학생 ${students.length}명, 역할 ${roles.length}개`);
   renderApp();
 }
 
 function resetToDefault() {
-  if (confirm("기본 26명 학생과 26마리 지브리 숲속 동물 짝꿍 역할로 초기화하시겠습니까?")) {
+  if (confirm("기본 26명 학생과 26개 넷플릭스 스타일 역할로 초기화하시겠습니까?")) {
     students = [...DEFAULT_STUDENTS];
     roles = JSON.parse(JSON.stringify(DEFAULT_ROLES));
     localStorage.setItem('class_students', JSON.stringify(students));
     localStorage.setItem('class_roles', JSON.stringify(roles));
     openEditorModal();
     renderApp();
-    showToast("초기 지브리 동물 예시 데이터(26명/26마리)로 복원되었습니다.");
+    showToast("초기 예시 데이터(26명/26개 역할)로 복원되었습니다.");
   }
 }
 
@@ -477,7 +512,7 @@ function openSheetModal(mode) {
 
   const modeBadge = document.getElementById('sheetModalMode');
   if (modeBadge) {
-    modeBadge.textContent = mode === 'load' ? '🔄 숲속 시트에서 불러오기 준비' : '💾 시트에 배정 결과 저장 준비';
+    modeBadge.textContent = mode === 'load' ? '🔄 시트에서 불러오기 준비' : '💾 시트에 결과 저장 준비';
   }
 
   modal?.classList.add('open');
@@ -524,12 +559,12 @@ async function executeSheetLoad() {
 
 async function executeSheetSave() {
   if (assignments.length === 0) {
-    alert("저장할 배정 결과가 없습니다. 먼저 [🎲 숲속 역할 배정하기]를 진행해 주세요.");
+    alert("저장할 배정 결과가 없습니다. 먼저 [▶ 역할 배정하기]를 진행해 주세요.");
     return;
   }
 
   const url = (document.getElementById('appsScriptUrl')?.value || '').trim();
-  const classTitle = document.getElementById('classTitleInput')?.value || '우리 반 숲속 1인 1역할';
+  const classTitle = document.getElementById('classTitleInput')?.value || 'CLASSFLIX 우리 반 1인 1역할';
 
   if (!url) {
     if (confirm("Google Apps Script URL이 설정되지 않았습니다.\n대신 클립보드에 표 형식으로 복사하여 스프레드시트에 바로 붙여넣으시겠습니까?")) {
@@ -548,7 +583,6 @@ async function executeSheetSave() {
       assignments: assignments.map((a, i) => ({
         index: i + 1,
         student: a.student,
-        animal: a.role.animal,
         role: a.role.title,
         icon: a.role.icon,
         desc: a.role.desc
@@ -576,9 +610,9 @@ function copyToClipboardTable() {
     return;
   }
 
-  const header = "번호\t학생 이름\t동물 짝꿍\t담당 역할\t역할 설명\n";
+  const header = "번호\t학생 이름\t담당 역할\t역할 설명\n";
   const rows = assignments.map((item, idx) => {
-    return `${idx + 1}\t${item.student}\t${item.role.icon} ${item.role.animal || ''}\t${item.role.title}\t${item.role.desc}`;
+    return `${idx + 1}\t${item.student}\t${item.role.icon} ${item.role.title}\t${item.role.desc}`;
   }).join('\n');
 
   navigator.clipboard.writeText(header + rows).then(() => {
@@ -595,21 +629,20 @@ function downloadCSV() {
   }
 
   const bom = "\uFEFF";
-  let csv = bom + "번호,학생 이름,동물 짝꿍,담당 역할,역할 설명\n";
+  let csv = bom + "번호,학생 이름,담당 역할,역할 설명\n";
 
   assignments.forEach((item, idx) => {
     const sName = `"${item.student.replace(/"/g, '""')}"`;
-    const animal = `"${(item.role.icon + ' ' + (item.role.animal || '')).replace(/"/g, '""')}"`;
-    const rTitle = `"${item.role.title.replace(/"/g, '""')}"`;
+    const rTitle = `"${(item.role.icon + ' ' + item.role.title).replace(/"/g, '""')}"`;
     const rDesc = `"${item.role.desc.replace(/"/g, '""')}"`;
-    csv += `${idx + 1},${sName},${animal},${rTitle},${rDesc}\n`;
+    csv += `${idx + 1},${sName},${rTitle},${rDesc}\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `우리반_숲속_1인1역할_배정결과_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `우리반_CLASSFLIX_1인1역할_배정결과_${new Date().toISOString().slice(0, 10)}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -637,9 +670,9 @@ function toggleSound() {
   localStorage.setItem('class_sound', soundEnabled);
   const btn = document.getElementById('soundToggleBtn');
   if (btn) {
-    btn.innerHTML = soundEnabled ? '🔔 오르골 켜짐' : '🔕 오르골 꺼짐';
+    btn.innerHTML = soundEnabled ? '🔔 두둥 사운드 켜짐' : '🔕 사운드 꺼짐';
   }
-  showToast(soundEnabled ? "숲속 오르골 소리가 켜졌습니다." : "오르골 소리가 꺼졌습니다.");
+  showToast(soundEnabled ? "넷플릭스 '두둥' 효과음이 켜졌습니다." : "효과음이 꺼졌습니다.");
 }
 
 function escapeHtml(text) {
@@ -652,7 +685,7 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-// 10. 지브리 숲속 나뭇잎 & 도토리 꽃가루 효과 (Canvas)
+// 10. 넷플릭스 시네마틱 레드 & 실버 스파크 효과 (Canvas)
 function launchConfetti() {
   const canvas = document.getElementById('confettiCanvas');
   if (!canvas) return;
@@ -661,21 +694,20 @@ function launchConfetti() {
   canvas.height = window.innerHeight;
 
   const pieces = [];
-  // 숲속 풀잎 초록, 황금 도토리빛, 햇살 노랑, 산들바람 하늘색
-  const colors = ['#4f8b5c', '#76a035', '#a1cf64', '#e5982e', '#cf7b19', '#fde047', '#38bdf8', '#ebdccc'];
+  const colors = ['#e50914', '#f40612', '#ffffff', '#e5e5e5', '#ff4d58', '#b81d24'];
 
   for (let i = 0; i < 95; i++) {
     pieces.push({
       x: canvas.width / 2,
       y: canvas.height * 0.45,
-      w: Math.random() * 10 + 6,
-      h: Math.random() * 8 + 4,
+      w: Math.random() * 8 + 5,
+      h: Math.random() * 6 + 3,
       color: colors[Math.floor(Math.random() * colors.length)],
-      vx: (Math.random() - 0.5) * 19,
-      vy: (Math.random() - 0.72) * 17,
-      gravity: 0.32,
+      vx: (Math.random() - 0.5) * 20,
+      vy: (Math.random() - 0.72) * 18,
+      gravity: 0.35,
       rotation: Math.random() * 360,
-      vRot: (Math.random() - 0.5) * 9,
+      vRot: (Math.random() - 0.5) * 10,
       opacity: 1
     });
   }
@@ -701,10 +733,7 @@ function launchConfetti() {
         ctx.rotate((p.rotation * Math.PI) / 180);
         ctx.globalAlpha = Math.max(p.opacity, 0);
         ctx.fillStyle = p.color;
-        // 나뭇잎 형태 타원
-        ctx.beginPath();
-        ctx.ellipse(0, 0, p.w / 2, p.h / 2, 0, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
         ctx.restore();
       }
     });
@@ -753,7 +782,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const soundBtn = document.getElementById('soundToggleBtn');
   if (soundBtn) {
-    soundBtn.innerHTML = soundEnabled ? '🔔 오르골 켜짐' : '🔕 오르골 꺼짐';
+    soundBtn.innerHTML = soundEnabled ? '🔔 두둥 사운드 켜짐' : '🔕 사운드 꺼짐';
   }
 
   renderApp();

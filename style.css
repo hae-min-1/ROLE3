@@ -1,50 +1,37 @@
 /* 
- * 🌿 지브리 감성 숲속 마을 1인 1역할 배정기 (Ghibli Forest Class 1-Person 1-Role)
- * 따뜻한 양피지, 숲속 풀잎, 도토리, 동물 친구들이 함께하는 지브리 동화풍 디자인
+ * 🎬 CLASSFLIX (넷플릭스 스타일 우리 반 1인 1역할 배정 시스템)
+ * 다크 시네마틱 테마, 넷플릭스 레드(#E50914), 포스터 카드 스케일 업 인터랙션
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gamja+Flower&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-  /* 🍃 지브리 자연주의 & 숲속 팔레트 */
-  --bg-canvas: #f7f4eb;
-  --bg-parchment: #fcfaf5;
-  --text-main: #342820;
-  --text-muted: #6b5c50;
-  --text-subtle: #9c8b7c;
+  /* 넷플릭스 브랜드 팔레트 */
+  --bg-netflix: #141414;
+  --bg-surface: #181818;
+  --bg-card: #202020;
+  --bg-card-hover: #2a2a2a;
+  
+  --netflix-red: #e50914;
+  --netflix-red-hover: #f40612;
+  --netflix-red-dark: #b81d24;
+  --netflix-red-glow: rgba(229, 9, 20, 0.45);
 
-  /* 지브리 시그니처 컬러 */
-  --forest-deep: #254d32;
-  --forest-green: #376b47;
-  --forest-leaf: #4f8b5c;
-  --forest-mint: #e2f0e6;
-  
-  --wood-dark: #503629;
-  --wood-warm: #73503a;
-  --wood-light: #ebdccc;
-  
-  --amber-sun: #e5982e;
-  --amber-light: #fef3c7;
-  --acorn-brown: #8b5a2b;
-  --meadow-yellow: #fde047;
-  --sky-breeze: #e0f2fe;
-  --terracotta: #d97736;
-  --rose-berry: #be5a58;
-  
-  --card-bg: #ffffff;
-  --card-border: #e6decb;
-  --card-shadow: 0 4px 16px rgba(80, 54, 41, 0.08);
-  --card-shadow-hover: 0 10px 28px rgba(37, 77, 50, 0.16);
+  --text-white: #ffffff;
+  --text-gray: #e5e5e5;
+  --text-muted: #aaaaaa;
+  --text-dark-muted: #757575;
 
-  --font-story: 'Gamja Flower', 'Jua', cursive, sans-serif;
-  --font-title: 'Jua', 'Noto Sans KR', sans-serif;
-  --font-body: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  
-  --radius-sm: 10px;
-  --radius-md: 18px;
-  --radius-lg: 26px;
-  --radius-pill: 9999px;
-  --transition: all 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+  --border-dark: #333333;
+  --border-light: #404040;
+
+  --font-logo: 'Bebas Neue', Impact, sans-serif;
+  --font-main: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -54,109 +41,95 @@
 }
 
 body {
-  font-family: var(--font-body);
-  background-color: var(--bg-canvas);
-  /* 따뜻한 동화책 종이 질감 & 풀잎 모티브 도트 */
-  background-image: 
-    radial-gradient(#e4dcc7 1.2px, transparent 1.2px), 
-    radial-gradient(#e6e0d0 1.2px, #f7f4eb 1.2px);
-  background-size: 32px 32px;
-  background-position: 0 0, 16px 16px;
-  color: var(--text-main);
+  font-family: var(--font-main);
+  background-color: var(--bg-netflix);
+  color: var(--text-white);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  /* 넷플릭스 특유의 은은한 상단 비네트 그라데이션 */
+  background-image: radial-gradient(circle at 50% 0%, #2b1114 0%, #141414 70%);
+  background-attachment: fixed;
 }
 
-/* 앱 메인 래퍼 */
+/* 앱 전체 컨테이너 */
 .app-container {
-  max-width: 1340px;
+  max-width: 1380px;
   margin: 0 auto;
-  padding: 24px 20px 60px 20px;
+  padding: 24px 24px 80px 24px;
 }
 
-/* 🏡 지브리 오두막 상단 헤더 바 */
+/* 🎥 넷플릭스 상단 내비게이션 바 */
 .top-header {
-  background: var(--bg-parchment);
-  border-radius: var(--radius-lg);
-  padding: 18px 28px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  padding: 16px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 6px 20px rgba(78, 52, 36, 0.07);
-  border: 2px solid #e5dcce;
-  margin-bottom: 24px;
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+  margin-bottom: 28px;
   flex-wrap: wrap;
   gap: 16px;
-  position: relative;
-}
-
-.top-header::after {
-  content: "🍃 🌿 🌰";
-  position: absolute;
-  top: -12px;
-  right: 28px;
-  font-size: 13px;
-  letter-spacing: 4px;
-  background: var(--bg-parchment);
-  padding: 0 8px;
-  border-radius: 12px;
-  border: 1px solid #e5dcce;
+  position: sticky;
+  top: 16px;
+  z-index: 50;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
-.brand-icon {
-  font-size: 32px;
-  background: linear-gradient(135deg, #eaf5ec 0%, #d2ebd8 100%);
-  width: 54px;
-  height: 54px;
-  border-radius: var(--radius-md);
+.netflix-logo-badge {
+  font-family: var(--font-logo);
+  font-size: 36px;
+  letter-spacing: 1.5px;
+  color: var(--netflix-red);
+  text-shadow: 0 2px 10px rgba(229, 9, 20, 0.5);
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 2px solid #8ab895;
-  box-shadow: 0 3px 10px rgba(55, 107, 71, 0.18);
+  gap: 4px;
+  line-height: 1;
 }
 
-.brand-text h1 {
-  font-family: var(--font-title);
-  font-size: 26px;
-  color: var(--forest-deep);
-  letter-spacing: -0.5px;
-  margin-bottom: 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.netflix-logo-badge span.sub-text {
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  background: var(--netflix-red);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 2px;
+  margin-left: 4px;
 }
 
 .class-title-input {
   border: none;
-  background: #f0e9dc;
-  font-family: var(--font-story);
-  font-size: 16px;
+  background: #262626;
+  font-family: var(--font-main);
+  font-size: 13px;
   font-weight: 700;
-  color: var(--wood-warm);
-  padding: 3px 12px;
-  border-radius: var(--radius-pill);
-  width: 250px;
-  border: 1.5px dashed #bba993;
+  color: var(--text-white);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  width: 240px;
+  border-bottom: 2px solid var(--netflix-red);
   transition: var(--transition);
 }
 
 .class-title-input:hover,
 .class-title-input:focus {
-  background: #e7ddce;
-  border-color: var(--wood-warm);
+  background: #333333;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(115, 80, 58, 0.15);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
 }
 
-/* 상단 버튼 그룹 (자연 목재 및 풀잎 버튼) */
+/* 상단 액션 버튼 그룹 */
 .header-actions {
   display: flex;
   align-items: center;
@@ -167,13 +140,13 @@ body {
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  padding: 9px 17px;
-  border-radius: var(--radius-md);
-  border: 1.5px solid transparent;
+  gap: 8px;
+  font-family: var(--font-main);
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
   cursor: pointer;
   white-space: nowrap;
   transition: var(--transition);
@@ -182,80 +155,92 @@ body {
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
+/* 넷플릭스 시그니처 레드 버튼 */
 .btn-primary {
-  background: linear-gradient(135deg, #376b47 0%, #254d32 100%);
+  background: var(--netflix-red);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(37, 77, 50, 0.3);
-  border-color: #254d32;
+  box-shadow: 0 4px 14px var(--netflix-red-glow);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #448057 0%, #2e5c3c 100%);
-  box-shadow: 0 6px 18px rgba(37, 77, 50, 0.4);
-  transform: translateY(-2px);
+  background: var(--netflix-red-hover);
+  box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
+  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: #ffffff;
-  color: var(--wood-dark);
-  border-color: #d6cab5;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .btn-secondary:hover {
-  background: #f7f3ea;
-  border-color: #bfae95;
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .btn-sheet-load {
-  background: #eef8f1;
-  color: #1e5c33;
-  border-color: #c0e2cb;
+  background: #1f2937;
+  color: #93c5fd;
+  border-color: #374151;
 }
 
 .btn-sheet-load:hover {
-  background: #e0f2e5;
-  border-color: #9cd1ad;
-  transform: translateY(-1px);
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
 }
 
 .btn-sheet-save {
-  background: #fcf4e8;
-  color: #8b5a2b;
-  border-color: #f0dac2;
+  background: #2e1065;
+  color: #d8b4fe;
+  border-color: #4c1d95;
 }
 
 .btn-sheet-save:hover {
-  background: #f6e8d4;
-  border-color: #e5c3a1;
-  transform: translateY(-1px);
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #7c3aed;
 }
 
 .btn-print {
-  background: #fdf6df;
-  color: #855708;
-  border-color: #fae7a6;
+  background: #262626;
+  color: #fef08a;
+  border-color: #404040;
 }
 
 .btn-print:hover {
-  background: #faedc4;
-  border-color: #f7dd81;
-  transform: translateY(-1px);
+  background: #ca8a04;
+  color: #ffffff;
+  border-color: #ca8a04;
 }
 
-/* 🌲 지브리 대시보드 컨트롤 바 */
+/* 🎬 메인 히어로 배너 & 컨트롤 바 */
 .dashboard-bar {
-  background: var(--bg-parchment);
-  border-radius: var(--radius-lg);
-  padding: 22px 28px;
-  margin-bottom: 26px;
-  box-shadow: 0 6px 20px rgba(78, 52, 36, 0.06);
-  border: 2px solid #e5dcce;
+  background: linear-gradient(180deg, #1f1f1f 0%, #181818 100%);
+  border-radius: var(--radius-md);
+  padding: 24px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border: 1px solid var(--border-dark);
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-bar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--netflix-red);
 }
 
 .dashboard-row-main {
@@ -263,42 +248,48 @@ body {
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 18px;
 }
 
 .cta-group {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-/* 메인 [🎲 숲속 역할 배정하기] 지브리 시그니처 버튼 */
+/* 넷플릭스 플레이(PLAY) 스타일 메인 배정 버튼 */
 .btn-roll {
-  font-family: var(--font-title);
-  font-size: 19px;
-  padding: 13px 32px;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #e5982e 0%, #cf7b19 100%);
-  color: #ffffff;
-  border: 2px solid #a85e0a;
-  box-shadow: 0 6px 20px rgba(207, 123, 25, 0.38);
+  font-family: var(--font-main);
+  font-size: 17px;
+  font-weight: 800;
+  padding: 13px 34px;
+  border-radius: var(--radius-sm);
+  background: #ffffff;
+  color: #000000;
+  border: none;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   transition: var(--transition);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 18px rgba(255, 255, 255, 0.25);
+  letter-spacing: -0.3px;
 }
 
 .btn-roll:hover {
-  transform: translateY(-2px) scale(1.025);
-  box-shadow: 0 10px 28px rgba(207, 123, 25, 0.48);
-  background: linear-gradient(135deg, #f0a33a 0%, #d9821d 100%);
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.03);
+  box-shadow: 0 6px 24px rgba(255, 255, 255, 0.4);
 }
 
 .btn-roll:active {
-  transform: translateY(1px) scale(0.98);
+  transform: scale(0.97);
+}
+
+.btn-roll svg, .btn-roll span.play-icon {
+  color: #000000;
+  font-size: 18px;
 }
 
 .status-summary {
@@ -311,31 +302,31 @@ body {
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  background: #f0e9dc;
+  gap: 8px;
+  background: #2b2b2b;
   padding: 7px 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   font-weight: 700;
-  color: var(--wood-dark);
-  border: 1.5px solid #dcd1be;
+  color: var(--text-gray);
+  border: 1px solid #3d3d3d;
 }
 
 .status-badge.matched {
-  background: linear-gradient(135deg, #eaf5ec 0%, #e0f2e5 100%);
-  color: #1a4d2e;
-  border-color: #a8d5b4;
-  box-shadow: 0 2px 8px rgba(37, 77, 50, 0.12);
+  background: rgba(229, 9, 20, 0.15);
+  color: #ff6b72;
+  border-color: rgba(229, 9, 20, 0.4);
+  box-shadow: 0 2px 10px rgba(229, 9, 20, 0.15);
 }
 
 .sound-toggle-btn {
-  background: #f7f3ea;
-  border: 1.5px solid #dcd1be;
-  border-radius: var(--radius-md);
+  background: #262626;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-sm);
   padding: 8px 14px;
   cursor: pointer;
   font-size: 13px;
-  font-weight: 600;
-  color: var(--wood-warm);
+  font-weight: 700;
+  color: var(--text-gray);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -343,8 +334,8 @@ body {
 }
 
 .sound-toggle-btn:hover {
-  background: #ebe3d4;
-  border-color: #bfae95;
+  background: #333333;
+  color: #ffffff;
 }
 
 /* 보조 도구 바 */
@@ -352,33 +343,33 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1.5px solid #eae2d3;
-  padding-top: 16px;
+  border-top: 1px solid var(--border-dark);
+  padding-top: 18px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 14px;
 }
 
 .search-box {
   position: relative;
-  width: 290px;
+  width: 300px;
 }
 
 .search-box input {
   width: 100%;
-  padding: 9px 12px 9px 36px;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid #d5c8b2;
-  background: #ffffff;
+  padding: 9px 12px 9px 38px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-dark);
+  background: #141414;
   font-size: 13px;
-  font-family: var(--font-body);
-  color: var(--text-main);
+  font-family: var(--font-main);
+  color: var(--text-white);
   transition: var(--transition);
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: var(--forest-leaf);
-  box-shadow: 0 0 0 3px rgba(79, 139, 92, 0.2);
+  border-color: var(--netflix-red);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.35);
 }
 
 .search-box .search-icon {
@@ -386,7 +377,7 @@ body {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: #8c7b6d;
+  color: var(--text-dark-muted);
   font-size: 14px;
 }
 
@@ -398,11 +389,11 @@ body {
 
 .view-toggle {
   display: flex;
-  background: #ede6d8;
+  background: #141414;
   padding: 3px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   gap: 2px;
-  border: 1px solid #dcd1be;
+  border: 1px solid var(--border-dark);
 }
 
 .view-btn {
@@ -411,105 +402,119 @@ body {
   padding: 6px 14px;
   font-size: 12px;
   font-weight: 700;
-  color: var(--wood-dark);
-  border-radius: var(--radius-pill);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   transition: var(--transition);
 }
 
 .view-btn.active {
-  background: #ffffff;
-  color: var(--forest-deep);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--netflix-red);
+  color: #ffffff;
 }
 
-/* 🍃 매칭 카드 그리드 */
+/* 🎬 넷플릭스 카드 그리드 (Cinematic Poster Cards) */
 .role-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(295px, 1fr));
+  gap: 22px;
 }
 
-/* 🌟 부드러운 새싹 스케일 업 애니메이션 (Ghibli Sprout Scale-Up) */
-@keyframes cardScaleUp {
+/* 🌟 부드러운 넷플릭스 줌 & 스케일 업 애니메이션 */
+@keyframes netflixScaleUp {
   0% {
     opacity: 0;
-    transform: scale(0.65) translateY(30px) rotate(-1.5deg);
+    transform: scale(0.7) translateY(30px);
   }
   60% {
     opacity: 0.95;
-    transform: scale(1.04) translateY(-4px) rotate(0.8deg);
+    transform: scale(1.05) translateY(-4px);
   }
   80% {
-    transform: scale(0.98) translateY(1px) rotate(-0.3deg);
+    transform: scale(0.98) translateY(1px);
   }
   100% {
     opacity: 1;
-    transform: scale(1) translateY(0) rotate(0deg);
+    transform: scale(1) translateY(0);
   }
 }
 
 .scale-up-card {
   opacity: 0;
-  animation: cardScaleUp 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: netflixScaleUp 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   will-change: transform, opacity;
 }
 
-/* 🐾 단일 동물 1인 1역할 동화 카드 */
+/* 넷플릭스 썸네일 포스터 카드 */
 .role-card {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: var(--radius-md);
-  border: 2px solid #e7dfd0;
-  padding: 16px 18px;
-  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-dark);
+  padding: 0;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .role-card:hover {
-  transform: translateY(-4px) scale(1.015);
-  box-shadow: var(--card-shadow-hover);
-  border-color: #8ab895;
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9), 0 0 20px rgba(229, 9, 20, 0.35);
+  border-color: var(--netflix-red);
+  z-index: 10;
 }
 
-/* 카드 상단: 학생 번호 & 이름 & 동물 짝꿍 배지 */
-.card-header {
+/* 카드 상단 배너 (시네마틱 탑 헤더) */
+.card-top-banner {
+  background: linear-gradient(135deg, #2b1114 0%, #1a1a1a 100%);
+  padding: 14px 18px 12px 18px;
+  border-bottom: 1px solid var(--border-dark);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1.5px dashed #e7dfd0;
+  position: relative;
+}
+
+.card-top-banner::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, var(--netflix-red) 0%, transparent 100%);
 }
 
 .student-identity {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+}
+
+.student-badge-n {
+  font-family: var(--font-logo);
+  font-size: 20px;
+  color: var(--netflix-red);
+  line-height: 1;
 }
 
 .student-no {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
-  color: var(--wood-dark);
-  background: #f5eedf;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-pill);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px solid #ded3be;
+  color: var(--text-white);
+  background: #333333;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
 }
 
 .student-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--forest-deep);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text-white);
 }
 
 .card-actions {
@@ -519,191 +524,117 @@ body {
 }
 
 .btn-icon-mini {
-  background: #f7f3ea;
-  border: 1px solid #d5c8b2;
-  color: var(--wood-warm);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-gray);
   cursor: pointer;
-  padding: 4px 9px;
-  border-radius: var(--radius-pill);
-  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
   font-weight: 700;
   transition: var(--transition);
 }
 
 .btn-icon-mini:hover {
-  background: #e0f2e5;
-  color: #1e5c33;
-  border-color: #9cd1ad;
-  transform: scale(1.05);
+  background: var(--netflix-red);
+  color: #ffffff;
+  border-color: var(--netflix-red);
 }
 
-/* 🌿 동물 & 역할 콘텐츠 영역 (지브리 숲속 테마 순환) */
-.role-content {
-  border-radius: var(--radius-md);
-  padding: 14px 14px;
+/* 카드 바디: 역할 및 메타데이터 */
+.card-body-content {
+  padding: 18px;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
-  margin-bottom: 12px;
-  transition: background 0.3s ease;
+  flex: 1;
 }
 
-/* 1. 토토로 숲속 그린 */
-.role-card:nth-child(6n + 1) .role-content {
-  background: #eaf5ec;
-  border: 1.5px solid #b5dec0;
-}
-.role-card:nth-child(6n + 1) .role-icon {
-  background: #ffffff;
-  color: #254d32;
-  border: 1.5px solid #a8d5b4;
-}
-.role-card:nth-child(6n + 1) .role-title {
-  color: #1e452a;
+.role-header-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* 2. 도토리 따스한 오크 우드 */
-.role-card:nth-child(6n + 2) .role-content {
-  background: #f8efe4;
-  border: 1.5px solid #dec8b0;
-}
-.role-card:nth-child(6n + 2) .role-icon {
-  background: #ffffff;
-  color: #8b5a2b;
-  border: 1.5px solid #dec8b0;
-}
-.role-card:nth-child(6n + 2) .role-title {
-  color: #5c3817;
+.match-score {
+  font-size: 12px;
+  font-weight: 800;
+  color: #46d369; /* 넷플릭스 98% 일치 그린 */
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
-/* 3. 들꽃 햇살 옐로우 */
-.role-card:nth-child(6n + 3) .role-content {
-  background: #fdf8e6;
-  border: 1.5px solid #fae69e;
-}
-.role-card:nth-child(6n + 3) .role-icon {
-  background: #ffffff;
-  color: #a16207;
-  border: 1.5px solid #f6db7b;
-}
-.role-card:nth-child(6n + 3) .role-title {
-  color: #78350f;
+.episode-tag {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  border: 1px solid var(--border-dark);
+  padding: 1px 6px;
+  border-radius: 2px;
+  text-transform: uppercase;
 }
 
-/* 4. 산들바람 맑은 하늘 블루 */
-.role-card:nth-child(6n + 4) .role-content {
-  background: #edf7fd;
-  border: 1.5px solid #bae2fd;
-}
-.role-card:nth-child(6n + 4) .role-icon {
-  background: #ffffff;
-  color: #0369a1;
-  border: 1.5px solid #bae2fd;
-}
-.role-card:nth-child(6n + 4) .role-title {
-  color: #0c4a6e;
-}
-
-/* 5. 숲속 버섯 코랄 테라코타 */
-.role-card:nth-child(6n + 5) .role-content {
-  background: #fdf1ec;
-  border: 1.5px solid #fbc9b5;
-}
-.role-card:nth-child(6n + 5) .role-icon {
-  background: #ffffff;
-  color: #c2410c;
-  border: 1.5px solid #fbc9b5;
-}
-.role-card:nth-child(6n + 5) .role-title {
-  color: #7c2d12;
-}
-
-/* 6. 산골짜기 라벤더 꽃 */
-.role-card:nth-child(6n + 6) .role-content {
-  background: #f4edf9;
-  border: 1.5px solid #dfc9ee;
-}
-.role-card:nth-child(6n + 6) .role-icon {
-  background: #ffffff;
-  color: #6b21a8;
-  border: 1.5px solid #dfc9ee;
-}
-.role-card:nth-child(6n + 6) .role-title {
-  color: #581c87;
+.role-title-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .role-icon {
   font-size: 26px;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
+  background: #181818;
+  border: 1px solid var(--border-dark);
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 3px 8px rgba(78, 52, 36, 0.1);
-}
-
-.role-info {
-  flex: 1;
 }
 
 .role-title {
-  font-family: var(--font-title);
-  font-size: 17px;
-  margin-bottom: 4px;
-  line-height: 1.3;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
 }
 
 .role-desc {
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--text-muted);
-  line-height: 1.45;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
-/* 동물 파트너 태그 */
-.animal-partner-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--forest-deep);
-  background: #e2f0e6;
-  padding: 1px 7px;
-  border-radius: var(--radius-pill);
-  margin-bottom: 4px;
-}
-
-/* 카드 하단 팁 */
+/* 카드 하단 메타바 */
 .card-footer {
+  padding: 12px 18px;
+  background: #181818;
+  border-top: 1px solid var(--border-dark);
   display: flex;
   align-items: center;
   justify-content: space-between;
   font-size: 11px;
-  color: var(--text-subtle);
-  padding-top: 4px;
+  color: var(--text-dark-muted);
 }
 
-.badge-tag {
-  font-size: 11px;
-  color: var(--wood-warm);
-  font-weight: 700;
-  background: #f7f3ea;
-  padding: 2px 9px;
-  border-radius: var(--radius-pill);
-  border: 1px solid #e2d8c5;
+.netflix-badge {
+  font-family: var(--font-logo);
+  color: var(--netflix-red);
+  font-size: 14px;
+  letter-spacing: 0.5px;
 }
 
-/* 목록형 테이블 뷰 */
+/* 테이블 뷰 (목록형 뷰) */
 .role-table-container {
-  background: #ffffff;
+  background: var(--bg-card);
   border-radius: var(--radius-md);
-  border: 2px solid #e7dfd0;
-  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-dark);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
   overflow: hidden;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .role-table {
@@ -713,23 +644,25 @@ body {
 }
 
 .role-table th {
-  background: #f5eedf;
-  padding: 13px 18px;
+  background: #181818;
+  padding: 14px 20px;
   font-size: 13px;
-  font-weight: 700;
-  color: var(--wood-dark);
-  border-bottom: 2px solid #ded3be;
+  font-weight: 800;
+  color: var(--text-muted);
+  border-bottom: 2px solid var(--border-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .role-table td {
-  padding: 13px 18px;
+  padding: 14px 20px;
   font-size: 14px;
-  border-bottom: 1px solid #f0e9dc;
-  color: var(--text-main);
+  border-bottom: 1px solid #292929;
+  color: var(--text-white);
 }
 
 .role-table tr:hover {
-  background-color: #faf7f0;
+  background-color: #262626;
 }
 
 .role-table tr:last-child td {
@@ -747,12 +680,12 @@ body {
   z-index: 9999;
 }
 
-/* 모달 레이아웃 */
+/* 모달 레이아웃 (넷플릭스 팝업 스타일) */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(43, 31, 23, 0.55);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.82);
+  backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -769,17 +702,17 @@ body {
 }
 
 .modal-card {
-  background: var(--bg-parchment);
-  border-radius: var(--radius-lg);
+  background: #181818;
+  border-radius: var(--radius-md);
   max-width: 630px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 45px rgba(43, 31, 23, 0.25);
-  border: 2.5px solid #d5c7b2;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+  border: 1px solid var(--border-dark);
   display: flex;
   flex-direction: column;
-  transform: translateY(12px) scale(0.97);
+  transform: translateY(14px) scale(0.97);
   transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -789,28 +722,28 @@ body {
 
 .modal-header {
   padding: 20px 24px;
-  border-bottom: 1.5px solid #e7ded0;
+  border-bottom: 1px solid var(--border-dark);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f7f2e7;
+  background: #1f1f1f;
 }
 
 .modal-title {
-  font-family: var(--font-title);
-  font-size: 21px;
-  color: var(--forest-deep);
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .modal-close-btn {
-  background: #ede5d5;
-  border: 1px solid #dcd0bd;
+  background: #2a2a2a;
+  border: none;
   font-size: 18px;
   cursor: pointer;
-  color: var(--wood-dark);
+  color: var(--text-gray);
   width: 32px;
   height: 32px;
   border-radius: var(--radius-pill);
@@ -821,9 +754,8 @@ body {
 }
 
 .modal-close-btn:hover {
-  background: #c54a37;
+  background: var(--netflix-red);
   color: #ffffff;
-  border-color: #c54a37;
 }
 
 .modal-body {
@@ -835,13 +767,12 @@ body {
 
 .modal-footer {
   padding: 16px 24px;
-  background: #f7f2e7;
-  border-top: 1.5px solid #e7ded0;
+  background: #1f1f1f;
+  border-top: 1px solid var(--border-dark);
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 /* 입력 필드 & 가이드 박스 */
@@ -854,16 +785,17 @@ body {
 .form-label {
   font-size: 13px;
   font-weight: 700;
-  color: var(--wood-dark);
+  color: var(--text-gray);
 }
 
 .form-input, .form-textarea {
-  font-family: var(--font-body);
+  font-family: var(--font-main);
   font-size: 13px;
   padding: 10px 14px;
-  border: 1.5px solid #d5c7b2;
+  border: 1px solid var(--border-dark);
   border-radius: var(--radius-sm);
-  background: #ffffff;
+  background: #141414;
+  color: #ffffff;
   transition: var(--transition);
 }
 
@@ -874,18 +806,17 @@ body {
 
 .form-input:focus, .form-textarea:focus {
   outline: none;
-  background: #ffffff;
-  border-color: var(--forest-leaf);
-  box-shadow: 0 0 0 3px rgba(79, 139, 92, 0.2);
+  border-color: var(--netflix-red);
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.4);
 }
 
 .guide-box {
-  background: #fdf8e6;
-  border: 1.5px solid #fae69e;
-  border-radius: var(--radius-md);
+  background: #221d1d;
+  border: 1px solid #4a2123;
+  border-radius: var(--radius-sm);
   padding: 14px 16px;
   font-size: 13px;
-  color: #78350f;
+  color: #fca5a5;
   line-height: 1.55;
 }
 
@@ -895,8 +826,8 @@ body {
 }
 
 .code-box {
-  background: #252822;
-  color: #e2ebd8;
+  background: #0d0d0d;
+  color: #e5e5e5;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   font-family: 'Courier New', Courier, monospace;
@@ -904,17 +835,17 @@ body {
   position: relative;
   overflow-x: auto;
   max-height: 140px;
-  border: 1px solid #3c4238;
+  border: 1px solid #333333;
 }
 
 .btn-copy-code {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #4f8b5c;
+  background: var(--netflix-red);
   color: #ffffff;
   border: none;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   font-size: 11px;
   font-weight: 700;
   padding: 4px 10px;
@@ -923,10 +854,10 @@ body {
 }
 
 .btn-copy-code:hover {
-  background: #376b47;
+  background: var(--netflix-red-hover);
 }
 
-/* 명단 편집기 탭 및 투컬럼 */
+/* 명단 편집기 */
 .editor-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -938,22 +869,22 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 700;
-  border: 1.5px solid #d5c8b2;
+  border: 1px solid var(--border-dark);
 }
 
 .count-check-banner.matched {
-  background: #eaf5ec;
-  color: #1e5c33;
-  border-color: #a8d5b4;
+  background: #14301e;
+  color: #4ade80;
+  border-color: #166534;
 }
 
 .count-check-banner.mismatch {
-  background: #fdf1ec;
-  color: #c2410c;
-  border-color: #fbc9b5;
+  background: #3b181a;
+  color: #f87171;
+  border-color: #991b1b;
 }
 
 /* 토스트 메시지 */
@@ -961,11 +892,11 @@ body {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #254d32;
+  background: var(--netflix-red);
   color: #ffffff;
-  padding: 12px 22px;
-  border-radius: var(--radius-pill);
-  box-shadow: 0 10px 30px rgba(37, 77, 50, 0.35);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 30px rgba(229, 9, 20, 0.6);
   font-size: 14px;
   font-weight: 700;
   display: flex;
@@ -976,7 +907,6 @@ body {
   transform: translateY(20px);
   transition: var(--transition);
   pointer-events: none;
-  border: 1.5px solid #8ab895;
 }
 
 .toast.show {
@@ -986,6 +916,7 @@ body {
 
 /* ==============================================================
    🖨️ A4 교실 게시판 부착용 인쇄 스타일 (@media print)
+   (토너 절약을 위해 인쇄 시에는 깔끔한 고대비 화이트/블랙 전환)
    ============================================================== */
 @media print {
   @page {
@@ -1032,6 +963,7 @@ body {
     font-weight: bold;
     letter-spacing: -0.5px;
     margin-bottom: 4px;
+    color: #000000 !important;
   }
 
   .print-meta-info {
@@ -1058,10 +990,11 @@ body {
     padding: 4.5px 6px;
     text-align: left;
     vertical-align: middle;
+    color: #000000 !important;
   }
 
   .print-role-table th {
-    background-color: #f3f3f3 !important;
+    background-color: #f2f2f2 !important;
     font-weight: bold;
     text-align: center;
     -webkit-print-color-adjust: exact;
