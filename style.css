@@ -1,48 +1,50 @@
 /* 
- * 🏫 우리 반 1인 1역할 배정기 (Class 1-Person 1-Role Matcher)
- * 초등학생 눈높이에 맞춘 따뜻하고 산뜻한 파스텔톤 스타일시트
+ * 🌿 지브리 감성 숲속 마을 1인 1역할 배정기 (Ghibli Forest Class 1-Person 1-Role)
+ * 따뜻한 양피지, 숲속 풀잎, 도토리, 동물 친구들이 함께하는 지브리 동화풍 디자인
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jua&family=Gamja+Flower&family=Noto+Sans+KR:wght@400;500;600;700&display=swap');
 
 :root {
-  /* 파스텔 메인 테마 팔레트 */
-  --bg-main: #f8fafc;
-  --bg-canvas: #f0f4f8;
-  --text-main: #2d3748;
-  --text-muted: #718096;
-  --text-subtle: #a0aec0;
+  /* 🍃 지브리 자연주의 & 숲속 팔레트 */
+  --bg-canvas: #f7f4eb;
+  --bg-parchment: #fcfaf5;
+  --text-main: #342820;
+  --text-muted: #6b5c50;
+  --text-subtle: #9c8b7c;
+
+  /* 지브리 시그니처 컬러 */
+  --forest-deep: #254d32;
+  --forest-green: #376b47;
+  --forest-leaf: #4f8b5c;
+  --forest-mint: #e2f0e6;
   
-  --primary: #4f8cf6;
-  --primary-hover: #3b7ce8;
-  --primary-light: #eaf2ff;
+  --wood-dark: #503629;
+  --wood-warm: #73503a;
+  --wood-light: #ebdccc;
   
-  --mint: #40c497;
-  --mint-light: #e7f8f2;
-  --peach: #f9845b;
-  --peach-light: #fef1eb;
-  --yellow: #f5b041;
-  --yellow-light: #fef8ec;
-  --purple: #9b72cf;
-  --purple-light: #f3eefb;
-  --pink: #f172a1;
-  --pink-light: #fdeef4;
-  --sky: #3ca9e2;
-  --sky-light: #eaf6fc;
+  --amber-sun: #e5982e;
+  --amber-light: #fef3c7;
+  --acorn-brown: #8b5a2b;
+  --meadow-yellow: #fde047;
+  --sky-breeze: #e0f2fe;
+  --terracotta: #d97736;
+  --rose-berry: #be5a58;
   
   --card-bg: #ffffff;
-  --card-border: #edf2f7;
-  --card-shadow: 0 4px 12px rgba(148, 163, 184, 0.08);
-  --card-shadow-hover: 0 8px 24px rgba(148, 163, 184, 0.16);
+  --card-border: #e6decb;
+  --card-shadow: 0 4px 16px rgba(80, 54, 41, 0.08);
+  --card-shadow-hover: 0 10px 28px rgba(37, 77, 50, 0.16);
 
+  --font-story: 'Gamja Flower', 'Jua', cursive, sans-serif;
   --font-title: 'Jua', 'Noto Sans KR', sans-serif;
   --font-body: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
   --radius-pill: 9999px;
-  --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: all 0.26s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 * {
@@ -54,81 +56,107 @@
 body {
   font-family: var(--font-body);
   background-color: var(--bg-canvas);
+  /* 따뜻한 동화책 종이 질감 & 풀잎 모티브 도트 */
+  background-image: 
+    radial-gradient(#e4dcc7 1.2px, transparent 1.2px), 
+    radial-gradient(#e6e0d0 1.2px, #f7f4eb 1.2px);
+  background-size: 32px 32px;
+  background-position: 0 0, 16px 16px;
   color: var(--text-main);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
 }
 
-/* 앱 전체 컨테이너 */
+/* 앱 메인 래퍼 */
 .app-container {
-  max-width: 1320px;
+  max-width: 1340px;
   margin: 0 auto;
   padding: 24px 20px 60px 20px;
 }
 
-/* 상단 헤더 바 (One-row Clean Top Bar) */
+/* 🏡 지브리 오두막 상단 헤더 바 */
 .top-header {
-  background: #ffffff;
+  background: var(--bg-parchment);
   border-radius: var(--radius-lg);
-  padding: 16px 24px;
+  padding: 18px 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--card-border);
+  box-shadow: 0 6px 20px rgba(78, 52, 36, 0.07);
+  border: 2px solid #e5dcce;
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 16px;
+  position: relative;
+}
+
+.top-header::after {
+  content: "🍃 🌿 🌰";
+  position: absolute;
+  top: -12px;
+  right: 28px;
+  font-size: 13px;
+  letter-spacing: 4px;
+  background: var(--bg-parchment);
+  padding: 0 8px;
+  border-radius: 12px;
+  border: 1px solid #e5dcce;
 }
 
 .brand-section {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .brand-icon {
-  font-size: 28px;
-  background: var(--yellow-light);
-  width: 48px;
-  height: 48px;
+  font-size: 32px;
+  background: linear-gradient(135deg, #eaf5ec 0%, #d2ebd8 100%);
+  width: 54px;
+  height: 54px;
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #fce8bd;
+  border: 2px solid #8ab895;
+  box-shadow: 0 3px 10px rgba(55, 107, 71, 0.18);
 }
 
 .brand-text h1 {
   font-family: var(--font-title);
-  font-size: 24px;
-  color: #1e293b;
+  font-size: 26px;
+  color: var(--forest-deep);
   letter-spacing: -0.5px;
   margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .class-title-input {
   border: none;
-  background: transparent;
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--primary);
-  padding: 2px 6px;
-  border-radius: 4px;
-  width: 220px;
-  border-bottom: 1px dashed var(--primary);
+  background: #f0e9dc;
+  font-family: var(--font-story);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wood-warm);
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  width: 250px;
+  border: 1.5px dashed #bba993;
   transition: var(--transition);
 }
 
 .class-title-input:hover,
 .class-title-input:focus {
-  background: var(--primary-light);
+  background: #e7ddce;
+  border-color: var(--wood-warm);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(115, 80, 58, 0.15);
 }
 
-/* 상단 버튼 그룹 */
+/* 상단 버튼 그룹 (자연 목재 및 풀잎 버튼) */
 .header-actions {
   display: flex;
   align-items: center;
@@ -143,9 +171,9 @@ body {
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 600;
-  padding: 9px 16px;
+  padding: 9px 17px;
   border-radius: var(--radius-md);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   cursor: pointer;
   white-space: nowrap;
   transition: var(--transition);
@@ -154,76 +182,80 @@ body {
 }
 
 .btn:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #4f8cf6 0%, #3b7ce8 100%);
+  background: linear-gradient(135deg, #376b47 0%, #254d32 100%);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(79, 140, 246, 0.35);
+  box-shadow: 0 4px 14px rgba(37, 77, 50, 0.3);
+  border-color: #254d32;
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #3b7ce8 0%, #2563eb 100%);
-  box-shadow: 0 6px 16px rgba(79, 140, 246, 0.45);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #448057 0%, #2e5c3c 100%);
+  box-shadow: 0 6px 18px rgba(37, 77, 50, 0.4);
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
   background: #ffffff;
-  color: var(--text-main);
-  border-color: #e2e8f0;
+  color: var(--wood-dark);
+  border-color: #d6cab5;
 }
 
 .btn-secondary:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #f7f3ea;
+  border-color: #bfae95;
 }
 
 .btn-sheet-load {
-  background: var(--mint-light);
-  color: #0f7654;
-  border-color: #bbf0dd;
+  background: #eef8f1;
+  color: #1e5c33;
+  border-color: #c0e2cb;
 }
 
 .btn-sheet-load:hover {
-  background: #d4f4e7;
-  border-color: #8ce4c3;
+  background: #e0f2e5;
+  border-color: #9cd1ad;
+  transform: translateY(-1px);
 }
 
 .btn-sheet-save {
-  background: var(--purple-light);
-  color: #5c388d;
-  border-color: #dfcefc;
+  background: #fcf4e8;
+  color: #8b5a2b;
+  border-color: #f0dac2;
 }
 
 .btn-sheet-save:hover {
-  background: #e8dcfb;
-  border-color: #c9abf8;
+  background: #f6e8d4;
+  border-color: #e5c3a1;
+  transform: translateY(-1px);
 }
 
 .btn-print {
-  background: var(--yellow-light);
-  color: #925805;
-  border-color: #fde6b3;
+  background: #fdf6df;
+  color: #855708;
+  border-color: #fae7a6;
 }
 
 .btn-print:hover {
-  background: #fdf0ce;
-  border-color: #fcd783;
+  background: #faedc4;
+  border-color: #f7dd81;
+  transform: translateY(-1px);
 }
 
-/* 컨트롤 및 대시보드 섹션 */
+/* 🌲 지브리 대시보드 컨트롤 바 */
 .dashboard-bar {
-  background: #ffffff;
+  background: var(--bg-parchment);
   border-radius: var(--radius-lg);
-  padding: 20px 24px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-  border: 1px solid var(--card-border);
+  padding: 22px 28px;
+  margin-bottom: 26px;
+  box-shadow: 0 6px 20px rgba(78, 52, 36, 0.06);
+  border: 2px solid #e5dcce;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .dashboard-row-main {
@@ -237,33 +269,36 @@ body {
 .cta-group {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
+/* 메인 [🎲 숲속 역할 배정하기] 지브리 시그니처 버튼 */
 .btn-roll {
   font-family: var(--font-title);
-  font-size: 18px;
-  padding: 12px 28px;
+  font-size: 19px;
+  padding: 13px 32px;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #f9845b 0%, #ff6b4a 100%);
-  color: white;
-  border: none;
-  box-shadow: 0 6px 18px rgba(249, 132, 91, 0.38);
+  background: linear-gradient(135deg, #e5982e 0%, #cf7b19 100%);
+  color: #ffffff;
+  border: 2px solid #a85e0a;
+  box-shadow: 0 6px 20px rgba(207, 123, 25, 0.38);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   transition: var(--transition);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .btn-roll:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(249, 132, 91, 0.48);
+  transform: translateY(-2px) scale(1.025);
+  box-shadow: 0 10px 28px rgba(207, 123, 25, 0.48);
+  background: linear-gradient(135deg, #f0a33a 0%, #d9821d 100%);
 }
 
 .btn-roll:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 .status-summary {
@@ -271,35 +306,36 @@ body {
   align-items: center;
   gap: 12px;
   font-size: 14px;
-  color: var(--text-muted);
 }
 
 .status-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: var(--bg-canvas);
-  padding: 6px 14px;
+  gap: 7px;
+  background: #f0e9dc;
+  padding: 7px 16px;
   border-radius: var(--radius-pill);
-  font-weight: 600;
-  color: var(--text-main);
-  border: 1px solid #e2e8f0;
+  font-weight: 700;
+  color: var(--wood-dark);
+  border: 1.5px solid #dcd1be;
 }
 
 .status-badge.matched {
-  background: var(--mint-light);
-  color: #0f7654;
-  border-color: #bbf0dd;
+  background: linear-gradient(135deg, #eaf5ec 0%, #e0f2e5 100%);
+  color: #1a4d2e;
+  border-color: #a8d5b4;
+  box-shadow: 0 2px 8px rgba(37, 77, 50, 0.12);
 }
 
 .sound-toggle-btn {
-  background: transparent;
-  border: 1px solid #e2e8f0;
+  background: #f7f3ea;
+  border: 1.5px solid #dcd1be;
   border-radius: var(--radius-md);
-  padding: 8px 12px;
+  padding: 8px 14px;
   cursor: pointer;
   font-size: 13px;
-  color: var(--text-muted);
+  font-weight: 600;
+  color: var(--wood-warm);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -307,8 +343,8 @@ body {
 }
 
 .sound-toggle-btn:hover {
-  background: #f8fafc;
-  color: var(--text-main);
+  background: #ebe3d4;
+  border-color: #bfae95;
 }
 
 /* 보조 도구 바 */
@@ -316,39 +352,41 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 14px;
+  border-top: 1.5px solid #eae2d3;
+  padding-top: 16px;
   flex-wrap: wrap;
   gap: 12px;
 }
 
 .search-box {
   position: relative;
-  width: 280px;
+  width: 290px;
 }
 
 .search-box input {
   width: 100%;
-  padding: 8px 12px 8px 34px;
-  border-radius: var(--radius-sm);
-  border: 1px solid #e2e8f0;
+  padding: 9px 12px 9px 36px;
+  border-radius: var(--radius-pill);
+  border: 1.5px solid #d5c8b2;
+  background: #ffffff;
   font-size: 13px;
   font-family: var(--font-body);
+  color: var(--text-main);
   transition: var(--transition);
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 140, 246, 0.15);
+  border-color: var(--forest-leaf);
+  box-shadow: 0 0 0 3px rgba(79, 139, 92, 0.2);
 }
 
 .search-box .search-icon {
   position: absolute;
-  left: 10px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-subtle);
+  color: #8c7b6d;
   font-size: 14px;
 }
 
@@ -360,66 +398,92 @@ body {
 
 .view-toggle {
   display: flex;
-  background: #f1f5f9;
+  background: #ede6d8;
   padding: 3px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   gap: 2px;
+  border: 1px solid #dcd1be;
 }
 
 .view-btn {
   border: none;
   background: transparent;
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 12px;
-  font-weight: 600;
-  color: var(--text-muted);
-  border-radius: 6px;
+  font-weight: 700;
+  color: var(--wood-dark);
+  border-radius: var(--radius-pill);
   cursor: pointer;
   transition: var(--transition);
 }
 
 .view-btn.active {
   background: #ffffff;
-  color: var(--primary);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  color: var(--forest-deep);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* 매칭 카드 그리드 (Pastel Card Grid) */
+/* 🍃 매칭 카드 그리드 */
 .role-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 18px;
-  transition: var(--transition);
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 20px;
 }
 
-/* 단일 매칭 카드 */
+/* 🌟 부드러운 새싹 스케일 업 애니메이션 (Ghibli Sprout Scale-Up) */
+@keyframes cardScaleUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.65) translateY(30px) rotate(-1.5deg);
+  }
+  60% {
+    opacity: 0.95;
+    transform: scale(1.04) translateY(-4px) rotate(0.8deg);
+  }
+  80% {
+    transform: scale(0.98) translateY(1px) rotate(-0.3deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0) rotate(0deg);
+  }
+}
+
+.scale-up-card {
+  opacity: 0;
+  animation: cardScaleUp 0.52s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  will-change: transform, opacity;
+}
+
+/* 🐾 단일 동물 1인 1역할 동화 카드 */
 .role-card {
   background: #ffffff;
   border-radius: var(--radius-md);
-  border: 1px solid var(--card-border);
+  border: 2px solid #e7dfd0;
   padding: 16px 18px;
   box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .role-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-4px) scale(1.015);
   box-shadow: var(--card-shadow-hover);
+  border-color: #8ab895;
 }
 
-/* 카드 상단: 학생 정보 */
+/* 카드 상단: 학생 번호 & 이름 & 동물 짝꿍 배지 */
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
   padding-bottom: 10px;
-  border-bottom: 1px dashed #edf2f7;
+  border-bottom: 1.5px dashed #e7dfd0;
 }
 
 .student-identity {
@@ -430,21 +494,22 @@ body {
 
 .student-no {
   font-size: 12px;
-  font-weight: 700;
-  color: var(--text-muted);
-  background: #f1f5f9;
-  width: 26px;
-  height: 26px;
+  font-weight: 800;
+  color: var(--wood-dark);
+  background: #f5eedf;
+  width: 28px;
+  height: 28px;
   border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1.5px solid #ded3be;
 }
 
 .student-name {
   font-size: 16px;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--forest-deep);
 }
 
 .card-actions {
@@ -454,98 +519,129 @@ body {
 }
 
 .btn-icon-mini {
-  background: transparent;
-  border: none;
-  color: var(--text-subtle);
+  background: #f7f3ea;
+  border: 1px solid #d5c8b2;
+  color: var(--wood-warm);
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 4px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
   transition: var(--transition);
 }
 
 .btn-icon-mini:hover {
-  color: var(--primary);
-  background: var(--primary-light);
+  background: #e0f2e5;
+  color: #1e5c33;
+  border-color: #9cd1ad;
+  transform: scale(1.05);
 }
 
-/* 카드 바디: 역할 정보 (Pastel Accent Blocks) */
+/* 🌿 동물 & 역할 콘텐츠 영역 (지브리 숲속 테마 순환) */
 .role-content {
-  background: var(--mint-light);
   border-radius: var(--radius-md);
   padding: 14px 14px;
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   transition: background 0.3s ease;
 }
 
-/* 카드별 파스텔 테마 분배 (N-th child rotation) */
+/* 1. 토토로 숲속 그린 */
 .role-card:nth-child(6n + 1) .role-content {
-  background: var(--mint-light);
-  border: 1px solid #c9f0e1;
+  background: #eaf5ec;
+  border: 1.5px solid #b5dec0;
 }
 .role-card:nth-child(6n + 1) .role-icon {
   background: #ffffff;
-  color: #0f7654;
+  color: #254d32;
+  border: 1.5px solid #a8d5b4;
+}
+.role-card:nth-child(6n + 1) .role-title {
+  color: #1e452a;
 }
 
+/* 2. 도토리 따스한 오크 우드 */
 .role-card:nth-child(6n + 2) .role-content {
-  background: var(--peach-light);
-  border: 1px solid #fcded0;
+  background: #f8efe4;
+  border: 1.5px solid #dec8b0;
 }
 .role-card:nth-child(6n + 2) .role-icon {
   background: #ffffff;
-  color: #c24115;
+  color: #8b5a2b;
+  border: 1.5px solid #dec8b0;
+}
+.role-card:nth-child(6n + 2) .role-title {
+  color: #5c3817;
 }
 
+/* 3. 들꽃 햇살 옐로우 */
 .role-card:nth-child(6n + 3) .role-content {
-  background: var(--yellow-light);
-  border: 1px solid #fdeec9;
+  background: #fdf8e6;
+  border: 1.5px solid #fae69e;
 }
 .role-card:nth-child(6n + 3) .role-icon {
   background: #ffffff;
   color: #a16207;
+  border: 1.5px solid #f6db7b;
+}
+.role-card:nth-child(6n + 3) .role-title {
+  color: #78350f;
 }
 
+/* 4. 산들바람 맑은 하늘 블루 */
 .role-card:nth-child(6n + 4) .role-content {
-  background: var(--sky-light);
-  border: 1px solid #d0ecf9;
+  background: #edf7fd;
+  border: 1.5px solid #bae2fd;
 }
 .role-card:nth-child(6n + 4) .role-icon {
   background: #ffffff;
-  color: #0284c7;
+  color: #0369a1;
+  border: 1.5px solid #bae2fd;
+}
+.role-card:nth-child(6n + 4) .role-title {
+  color: #0c4a6e;
 }
 
+/* 5. 숲속 버섯 코랄 테라코타 */
 .role-card:nth-child(6n + 5) .role-content {
-  background: var(--purple-light);
-  border: 1px solid #e7d8f9;
+  background: #fdf1ec;
+  border: 1.5px solid #fbc9b5;
 }
 .role-card:nth-child(6n + 5) .role-icon {
   background: #ffffff;
-  color: #6d28d9;
+  color: #c2410c;
+  border: 1.5px solid #fbc9b5;
+}
+.role-card:nth-child(6n + 5) .role-title {
+  color: #7c2d12;
 }
 
+/* 6. 산골짜기 라벤더 꽃 */
 .role-card:nth-child(6n + 6) .role-content {
-  background: var(--pink-light);
-  border: 1px solid #fcd4e4;
+  background: #f4edf9;
+  border: 1.5px solid #dfc9ee;
 }
 .role-card:nth-child(6n + 6) .role-icon {
   background: #ffffff;
-  color: #be185d;
+  color: #6b21a8;
+  border: 1.5px solid #dfc9ee;
+}
+.role-card:nth-child(6n + 6) .role-title {
+  color: #581c87;
 }
 
 .role-icon {
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
+  font-size: 26px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 3px 8px rgba(78, 52, 36, 0.1);
 }
 
 .role-info {
@@ -554,20 +650,33 @@ body {
 
 .role-title {
   font-family: var(--font-title);
-  font-size: 16px;
-  color: #1e293b;
-  margin-bottom: 3px;
+  font-size: 17px;
+  margin-bottom: 4px;
   line-height: 1.3;
 }
 
 .role-desc {
-  font-size: 12px;
+  font-size: 12.5px;
   color: var(--text-muted);
-  line-height: 1.4;
+  line-height: 1.45;
   word-break: keep-all;
 }
 
-/* 카드 하단 팁 / 다짐 */
+/* 동물 파트너 태그 */
+.animal-partner-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--forest-deep);
+  background: #e2f0e6;
+  padding: 1px 7px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 4px;
+}
+
+/* 카드 하단 팁 */
 .card-footer {
   display: flex;
   align-items: center;
@@ -579,15 +688,19 @@ body {
 
 .badge-tag {
   font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
+  color: var(--wood-warm);
+  font-weight: 700;
+  background: #f7f3ea;
+  padding: 2px 9px;
+  border-radius: var(--radius-pill);
+  border: 1px solid #e2d8c5;
 }
 
-/* 테이블 뷰 (목록형 뷰) */
+/* 목록형 테이블 뷰 */
 .role-table-container {
   background: #ffffff;
   border-radius: var(--radius-md);
-  border: 1px solid var(--card-border);
+  border: 2px solid #e7dfd0;
   box-shadow: var(--card-shadow);
   overflow: hidden;
   margin-top: 10px;
@@ -600,46 +713,30 @@ body {
 }
 
 .role-table th {
-  background: #f8fafc;
-  padding: 12px 16px;
+  background: #f5eedf;
+  padding: 13px 18px;
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-muted);
-  border-bottom: 2px solid #edf2f7;
+  color: var(--wood-dark);
+  border-bottom: 2px solid #ded3be;
 }
 
 .role-table td {
-  padding: 12px 16px;
+  padding: 13px 18px;
   font-size: 14px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f0e9dc;
   color: var(--text-main);
 }
 
 .role-table tr:hover {
-  background-color: #fafbfc;
+  background-color: #faf7f0;
 }
 
 .role-table tr:last-child td {
   border-bottom: none;
 }
 
-/* 배정 애니메이션 효과 (Shuffle Pop) */
-@keyframes popIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.9) translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-.pop-animate {
-  animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* 축하 콘페티 캔버스 */
+/* 캔버스 */
 #confettiCanvas {
   position: fixed;
   top: 0;
@@ -654,7 +751,7 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(15, 23, 42, 0.45);
+  background: rgba(43, 31, 23, 0.55);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
@@ -662,7 +759,7 @@ body {
   z-index: 1000;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease;
   padding: 20px;
 }
 
@@ -672,18 +769,18 @@ body {
 }
 
 .modal-card {
-  background: #ffffff;
+  background: var(--bg-parchment);
   border-radius: var(--radius-lg);
-  max-width: 620px;
+  max-width: 630px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 45px rgba(43, 31, 23, 0.25);
+  border: 2.5px solid #d5c7b2;
   display: flex;
   flex-direction: column;
-  transform: translateY(12px) scale(0.98);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(12px) scale(0.97);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-overlay.open .modal-card {
@@ -692,38 +789,41 @@ body {
 
 .modal-header {
   padding: 20px 24px;
-  border-bottom: 1px solid #edf2f7;
+  border-bottom: 1.5px solid #e7ded0;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background: #f7f2e7;
 }
 
 .modal-title {
   font-family: var(--font-title);
-  font-size: 20px;
-  color: #1e293b;
+  font-size: 21px;
+  color: var(--forest-deep);
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
 .modal-close-btn {
-  background: transparent;
-  border: none;
-  font-size: 20px;
+  background: #ede5d5;
+  border: 1px solid #dcd0bd;
+  font-size: 18px;
   cursor: pointer;
-  color: var(--text-subtle);
+  color: var(--wood-dark);
   width: 32px;
   height: 32px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: var(--transition);
 }
 
 .modal-close-btn:hover {
-  background: #f1f5f9;
-  color: var(--text-main);
+  background: #c54a37;
+  color: #ffffff;
+  border-color: #c54a37;
 }
 
 .modal-body {
@@ -735,8 +835,8 @@ body {
 
 .modal-footer {
   padding: 16px 24px;
-  background: #f8fafc;
-  border-top: 1px solid #edf2f7;
+  background: #f7f2e7;
+  border-top: 1.5px solid #e7ded0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -744,7 +844,7 @@ body {
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
-/* 입력 필드 & 코드 블록 스타일 */
+/* 입력 필드 & 가이드 박스 */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -754,15 +854,16 @@ body {
 .form-label {
   font-size: 13px;
   font-weight: 700;
-  color: var(--text-main);
+  color: var(--wood-dark);
 }
 
 .form-input, .form-textarea {
   font-family: var(--font-body);
   font-size: 13px;
   padding: 10px 14px;
-  border: 1px solid #cbd5e1;
+  border: 1.5px solid #d5c7b2;
   border-radius: var(--radius-sm);
+  background: #ffffff;
   transition: var(--transition);
 }
 
@@ -773,18 +874,19 @@ body {
 
 .form-input:focus, .form-textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(79, 140, 246, 0.15);
+  background: #ffffff;
+  border-color: var(--forest-leaf);
+  box-shadow: 0 0 0 3px rgba(79, 139, 92, 0.2);
 }
 
 .guide-box {
-  background: var(--yellow-light);
-  border: 1px solid #fde6b3;
+  background: #fdf8e6;
+  border: 1.5px solid #fae69e;
   border-radius: var(--radius-md);
   padding: 14px 16px;
   font-size: 13px;
   color: #78350f;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .guide-box ol {
@@ -793,8 +895,8 @@ body {
 }
 
 .code-box {
-  background: #1e293b;
-  color: #e2e8f0;
+  background: #252822;
+  color: #e2ebd8;
   padding: 12px 14px;
   border-radius: var(--radius-sm);
   font-family: 'Courier New', Courier, monospace;
@@ -802,23 +904,26 @@ body {
   position: relative;
   overflow-x: auto;
   max-height: 140px;
+  border: 1px solid #3c4238;
 }
 
 .btn-copy-code {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: #334155;
+  background: #4f8b5c;
   color: #ffffff;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--radius-pill);
   font-size: 11px;
-  padding: 4px 8px;
+  font-weight: 700;
+  padding: 4px 10px;
   cursor: pointer;
+  transition: var(--transition);
 }
 
 .btn-copy-code:hover {
-  background: #475569;
+  background: #376b47;
 }
 
 /* 명단 편집기 탭 및 투컬럼 */
@@ -832,38 +937,37 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  background: #f8fafc;
-  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
   font-size: 13px;
-  font-weight: 600;
-  border: 1px solid #e2e8f0;
+  font-weight: 700;
+  border: 1.5px solid #d5c8b2;
 }
 
 .count-check-banner.matched {
-  background: var(--mint-light);
-  color: #0f7654;
-  border-color: #bbf0dd;
+  background: #eaf5ec;
+  color: #1e5c33;
+  border-color: #a8d5b4;
 }
 
 .count-check-banner.mismatch {
-  background: var(--peach-light);
-  color: #c24115;
-  border-color: #fcded0;
+  background: #fdf1ec;
+  color: #c2410c;
+  border-color: #fbc9b5;
 }
 
-/* 알림 토스트 (Toast message) */
+/* 토스트 메시지 */
 .toast {
   position: fixed;
   bottom: 24px;
   right: 24px;
-  background: #1e293b;
+  background: #254d32;
   color: #ffffff;
-  padding: 12px 20px;
-  border-radius: var(--radius-md);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 12px 22px;
+  border-radius: var(--radius-pill);
+  box-shadow: 0 10px 30px rgba(37, 77, 50, 0.35);
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -872,6 +976,7 @@ body {
   transform: translateY(20px);
   transition: var(--transition);
   pointer-events: none;
+  border: 1.5px solid #8ab895;
 }
 
 .toast.show {
@@ -881,7 +986,6 @@ body {
 
 /* ==============================================================
    🖨️ A4 교실 게시판 부착용 인쇄 스타일 (@media print)
-   A4 1장에 깔끔하게 들어가도록 최적화된 고대비 그리드/테이블 레이아웃
    ============================================================== */
 @media print {
   @page {
@@ -889,7 +993,6 @@ body {
     margin: 10mm 12mm;
   }
 
-  /* 인쇄 시 불필요한 컨트롤 일체 숨김 */
   .top-header,
   .dashboard-bar,
   .modal-overlay,
@@ -916,7 +1019,6 @@ body {
     margin: 0 !important;
   }
 
-  /* 인쇄 전용 헤더 표시 */
   .print-header {
     display: block !important;
     text-align: center;
@@ -940,7 +1042,6 @@ body {
     margin-top: 4px;
   }
 
-  /* 인쇄 시 26명 역할이 2열 표로 깔끔하게 A4 1장에 딱 맞게 출력 */
   .print-table-container {
     display: block !important;
   }
@@ -960,7 +1061,7 @@ body {
   }
 
   .print-role-table th {
-    background-color: #f0f0f0 !important;
+    background-color: #f3f3f3 !important;
     font-weight: bold;
     text-align: center;
     -webkit-print-color-adjust: exact;
@@ -983,21 +1084,19 @@ body {
     color: #555;
   }
 
-  /* 화면용 카드 그리드는 인쇄 시 숨기고 표로 대체 */
   .role-grid,
   .role-table-container {
     display: none !important;
   }
 }
 
-/* 화면에서는 인쇄 전용 영역 숨김 */
 .print-header,
 .print-table-container,
 .print-footer {
   display: none;
 }
 
-/* 반응형 대응 */
+/* 모바일 반응형 */
 @media (max-width: 768px) {
   .top-header {
     flex-direction: column;
