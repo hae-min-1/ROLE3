@@ -525,59 +525,261 @@ function saveAppsScriptUrl() {
   showToast("🔗 Google Apps Script URL이 브라우저에 저장되었습니다.");
 }
 
+// CSV 텍스트 파서 (구글 스프레드시트 직접 내보내기 CSV 파싱용)
+function parseCSV(text) {
+  const lines = [];
+  let row = [];
+  let inQuotes = false;
+  let curVal = '';
+
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i + 1];
+
+    if (c === '"') {
+      if (inQuotes && next === '"') {
+        curVal += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (c === ',' && !inQuotes) {
+      row.push(curVal.trim());
+      curVal = '';
+    } else if ((c === '\r' || c === '\n') && !inQuotes) {
+      if (c === '\r' && next === '\n') i++;
+      row.push(curVal.trim());
+      if (row.some(val => val.length > 0)) {
+        lines.push(row);
+      }
+      row = [];
+      curVal = '';
+    } else {
+      curVal += c;
+    }
+  }
+  if (curVal.length > 0 || row.length > 0) {
+    row.push(curVal.trim());
+    if (row.some(val => val.length > 0)) lines.push(row);
+  }
+  return lines;
+}
+
+// 9. 구글 스프레드시트 (Apps Script 및 직접 링크 지원) 연동 기능
+function openSheetModal(mode) {
+  const modal = document.getElementById('sheetModal');
+  const urlInput = document.getElementById('appsScriptUrl');
+  const savedUrl = localStorage.getItem('google_apps_script_url') || '';
+  if (urlInput) urlInput.value = savedUrl;
+
+  const modeBadge = document.getElementById('sheetModalMode');
+  if (modeBadge) {
+    modeBadge.textContent = mode === 'load' ? '🔄 시트에서 불러오기' : '💾 시트에 결과 저장';
+  }
+
+  // 모달 탭 초기화 (기본: 링크 연동 탭)
+  switchSheetTab('link');
+  modal?.classList.add('open');
+}
+
+function switchSheetTab(tabName) {
+  document.getElementById('tabBtnLink')?.classList.toggle('active', tabName === 'link');
+  document.getElementById('tabBtnPaste')?.classList.toggle('active', tabName === 'paste');
+  document.getElementById('tabBtnGuide')?.classList.toggle('active', tabName === 'guide');
+
+  const paneLink = document.getElementById('tabPaneLink');
+  const panePaste = document.getElementById('tabPanePaste');
+  const paneGuide = document.getElementById('tabPaneGuide');
+
+  if (paneLink) paneLink.style.display = tabName === 'link' ? 'flex' : 'none';
+  if (panePaste) panePaste.style.display = tabName === 'paste' ? 'flex' : 'none';
+  if (paneGuide) paneGuide.style.display = tabName === 'guide' ? 'flex' : 'none';
+}
+
+function saveAppsScriptUrl() {
+  const urlInput = document.getElementById('appsScriptUrl');
+  const url = (urlInput?.value || '').trim();
+  localStorage.setItem('google_apps_script_url', url);
+  showToast("🔗 입력하신 주소가 브라우저에 저장되었습니다.");
+}
+
+// 스마트 스프레드시트 불러오기 (구글 시트 링크 & Apps Script URL 동시 지원)
 async function executeSheetLoad() {
-  const url = (document.getElementById('appsScriptUrl')?.value || '').trim();
+  let url = (document.getElementById('appsScriptUrl')?.value || '').trim();
   if (!url) {
-    alert("구글 Apps Script 웹 앱 URL을 입력해 주세요.\n(아직 배포 전이라면 하단의 '표 복사' 또는 'CSV 다운로드'를 활용하실 수 있습니다)");
+    alert("구글 스프레드시트 공유 링크 또는 Apps Script 웹 앱 URL을 입력해 주세요.\n(또는 '시트 복사 붙여넣기' 탭을 이용하시면 링크 없이도 즉시 불러올 수 있습니다)");
     return;
   }
 
   saveAppsScriptUrl();
-  showToast("⏳ 구글 스프레드시트에서 데이터를 불러오는 중...");
+  showToast("⏳ 스프레드시트 데이터 불러오는 중...");
+
+  // 1. 구글 스프레드시트 링크 직접 입력한 경우 (docs.google.com/spreadsheets/d/...)
+  const sheetMatch = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+  if (sheetMatch) {
+    const spreadsheetId = sheetMatch[1];
+    // Google Sheets public CSV export endpoint (CORS 허용됨)
+    const csvUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/gviz/tq?tqx=out:csv`;
+
+    try {
+      const res = await fetch(csvUrl, { method: 'GET' });
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const csvText = await res.text();
+      const parsedRows = parseCSV(csvText);
+
+      if (!parsedRows || parsedRows.length === 0) {
+        throw new Error("스프레드시트에 내용이 비어 있습니다.");
+      }
+
+      // 첫 행이 헤더인지 판별 (이름, 학생, 번호, 역할 등)
+      let startIndex = 0;
+      const headerCheck = (parsedRows[0][0] || '') + (parsedRows[0][1] || '') + (parsedRows[0][2] || '');
+      if (headerCheck.includes('이름') || headerCheck.includes('학생') || headerCheck.includes('역할') || headerCheck.includes('번호')) {
+        startIndex = 1;
+      }
+
+      const newStudents = [];
+      const newRoles = [];
+
+      for (let i = startIndex; i < parsedRows.length; i++) {
+        const row = parsedRows[i];
+        if (!row || row.length === 0) continue;
+
+        // A열이 순번(숫자)이고 B열이 이름인 경우 처리
+        let studentName = '';
+        let roleTitle = '';
+        let roleDesc = '';
+
+        if (/^\d+$/.test(row[0]) && row[1]) {
+          studentName = `${row[0]}. ${row[1]}`;
+          roleTitle = row[2] || '';
+          roleDesc = row[3] || '';
+        } else {
+          studentName = row[0] || '';
+          roleTitle = row[1] || '';
+          roleDesc = row[2] || '';
+        }
+
+        if (studentName.trim()) {
+          newStudents.push(studentName.trim());
+        }
+        if (roleTitle.trim()) {
+          newRoles.push({
+            icon: "⭐",
+            title: roleTitle.trim(),
+            desc: roleDesc.trim() || "학급을 위한 소중한 역할이에요."
+          });
+        }
+      }
+
+      if (newStudents.length > 0) {
+        students = newStudents;
+        localStorage.setItem('class_students', JSON.stringify(students));
+      }
+      if (newRoles.length > 0) {
+        roles = newRoles;
+        localStorage.setItem('class_roles', JSON.stringify(roles));
+      }
+
+      closeModal('sheetModal');
+      showToast(`✅ 구글 스프레드시트 직접 연동 성공! (학생 ${newStudents.length}명, 역할 ${newRoles.length}개)`);
+      renderApp();
+      return;
+
+    } catch (err) {
+      console.error("Direct sheet CSV fetch failed:", err);
+      alert(
+        "⚠️ 구글 스프레드시트 권한 확인 필요:\n\n" +
+        "구글 스프레드시트 오른쪽 위의 [공유] 버튼을 누른 후,\n" +
+        "[일반 액세스]가 '링크가 있는 모든 사용자' (역할: 뷰어)로 되어 있는지 확인해 주세요.\n\n" +
+        "※ 학교 구글 계정으로 외부 공개가 금지된 경우, 상단의 [시트 복사 붙여넣기] 탭에서 시트 내용을 복사해 붙여넣으시면 1초 만에 불러올 수 있습니다!"
+      );
+      return;
+    }
+  }
+
+  // 2. Google Apps Script Web App URL인 경우 (script.google.com/macros/s/...)
+  let scriptUrl = url;
+  if (scriptUrl.endsWith('/dev')) {
+    scriptUrl = scriptUrl.replace(/\/dev$/, '/exec');
+  }
 
   try {
-    const res = await fetch(url, { method: 'GET', mode: 'cors' });
+    const res = await fetch(scriptUrl, {
+      method: 'GET',
+      mode: 'cors',
+      redirect: 'follow'
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP status ${res.status}`);
+    }
+
     const data = await res.json();
 
-    if (data.students && Array.isArray(data.students)) {
+    if (data.students && Array.isArray(data.students) && data.students.length > 0) {
       students = data.students;
       localStorage.setItem('class_students', JSON.stringify(students));
     }
-    if (data.roles && Array.isArray(data.roles)) {
+    if (data.roles && Array.isArray(data.roles) && data.roles.length > 0) {
       roles = data.roles;
       localStorage.setItem('class_roles', JSON.stringify(roles));
     }
 
     closeModal('sheetModal');
-    showToast(`✅ 시트 연동 성공! 학생 ${students.length}명, 역할 ${roles.length}개를 불러왔습니다.`);
+    showToast(`✅ Apps Script 연동 성공! 학생 ${students.length}명, 역할 ${roles.length}개를 불러왔습니다.`);
     renderApp();
+
   } catch (err) {
-    console.error(err);
-    alert("시트 불러오기 중 통신 오류가 발생했습니다.\n\n구글 Apps Script 배포 시 '웹 앱 액세스 권한'이 '모든 사용자(Anyone)'로 설정되어 있는지 확인해 주세요.");
+    console.error("Apps Script fetch error:", err);
+    alert(
+      "⚠️ Apps Script 웹 앱 권한 설정 안내:\n\n" +
+      "Apps Script [배포] → [새 배포]에서 반드시 아래 2가지를 확인하세요:\n" +
+      "1. [다음 사용자 권한으로 앱 실행]: 반드시 '나 (내 계정)' (Me) 선택!\n" +
+      "   ('웹 앱에 액세스하는 사용자'로 하면 브라우저에서 권한 오류가 발생합니다)\n" +
+      "2. [액세스 권한이 있는 사용자]: '모든 사용자' (Anyone) 선택!\n\n" +
+      "※ 더 간단한 방법: 스프레드시트 주소를 그대로 넣으시거나, 상단의 [시트 복사 붙여넣기] 탭을 이용해 보세요!"
+    );
   }
 }
 
+// 스프레드시트에 결과 저장 실행 (no-cors 적용으로 OPTIONS 사전검사 오류 원천 차단)
 async function executeSheetSave() {
   if (assignments.length === 0) {
     alert("저장할 배정 결과가 없습니다. 먼저 [▶ 역할 배정하기]를 진행해 주세요.");
     return;
   }
 
-  const url = (document.getElementById('appsScriptUrl')?.value || '').trim();
+  let url = (document.getElementById('appsScriptUrl')?.value || '').trim();
   const classTitle = document.getElementById('classTitleInput')?.value || 'CLASSFLIX 우리 반 1인 1역할';
 
   if (!url) {
-    if (confirm("Google Apps Script URL이 설정되지 않았습니다.\n대신 클립보드에 표 형식으로 복사하여 스프레드시트에 바로 붙여넣으시겠습니까?")) {
+    if (confirm("저장할 URL이 입력되지 않았습니다.\n대신 클립보드에 표 형식으로 복사하여 구글 시트에 바로 Ctrl+V 하시겠습니까?")) {
       copyToClipboardTable();
     }
     return;
+  }
+
+  // 만약 구글 스프레드시트 링크를 넣은 경우 안내
+  if (url.includes('docs.google.com/spreadsheets/d/')) {
+    alert(
+      "입력하신 주소는 스프레드시트 보기 링크입니다.\n스프레드시트에 브라우저가 직접 저장하려면 구글 보안 정책상 Apps Script 웹 앱 URL이 필요합니다.\n\n대신 지금 바로 [📋 표 복사] 버튼을 누른 후, 스프레드시트에서 Ctrl+V 하시면 표 형태로 완벽히 붙여넣어집니다!"
+    );
+    copyToClipboardTable();
+    return;
+  }
+
+  if (url.endsWith('/dev')) {
+    url = url.replace(/\/dev$/, '/exec');
   }
 
   saveAppsScriptUrl();
   showToast("⏳ 스프레드시트에 결과를 전송하는 중...");
 
   try {
-    const payload = {
+    const payload = JSON.stringify({
       title: classTitle,
       date: new Date().toISOString(),
       assignments: assignments.map((a, i) => ({
@@ -587,21 +789,95 @@ async function executeSheetSave() {
         icon: a.role.icon,
         desc: a.role.desc
       }))
-    };
+    });
 
+    // text/plain & no-cors 전송: 브라우저 OPTIONS 프리플라이트 차단 문제 해결
     await fetch(url, {
       method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: payload
     });
 
     closeModal('sheetModal');
-    showToast("🎉 스프레드시트에 성공적으로 배정 결과가 기록되었습니다!");
+    showToast("🎉 스프레드시트에 배정 결과 저장 요청을 보냈습니다!");
+
   } catch (err) {
     console.error(err);
-    alert("저장 요청을 보냈습니다. (CORS 보안 설정에 따라 확인 창이 뜰 수 있으며, 시트 기록 여부를 확인하세요).\n\n실패 시 '클립보드 복사' 버튼으로 구글 시트에 바로 Ctrl+V 하실 수 있습니다.");
+    alert(
+      "스프레드시트 전송 중 오류가 발생했습니다.\n\n대신 하단의 [📋 표 복사] 버튼을 누르시면 구글 시트에 Ctrl+V로 즉시 붙여넣을 수 있습니다!"
+    );
   }
+}
+
+// 스프레드시트 직접 복사 붙여넣기 데이터 파싱 함수
+function loadFromPastedData() {
+  const pasteArea = document.getElementById('pasteSheetData');
+  const text = (pasteArea?.value || '').trim();
+
+  if (!text) {
+    alert("스프레드시트에서 복사한 내용을 붙여넣어 주세요.");
+    return;
+  }
+
+  // 탭 또는 쉼표 구분 분리
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length === 0) return;
+
+  const newStudents = [];
+  const newRoles = [];
+
+  lines.forEach((line, idx) => {
+    // 탭(\t) 또는 쉼표(,) 구분
+    const cols = line.includes('\t') ? line.split('\t') : line.split(',');
+    if (cols.length === 0) return;
+
+    // 헤더 행 건너뛰기
+    if (idx === 0 && (line.includes('이름') || line.includes('학생') || line.includes('역할'))) {
+      return;
+    }
+
+    let sName = '';
+    let rTitle = '';
+    let rDesc = '';
+
+    if (/^\d+$/.test(cols[0].trim()) && cols[1]) {
+      sName = `${cols[0].trim()}. ${cols[1].trim()}`;
+      rTitle = cols[2] ? cols[2].trim() : '';
+      rDesc = cols[3] ? cols[3].trim() : '';
+    } else {
+      sName = cols[0] ? cols[0].trim() : '';
+      rTitle = cols[1] ? cols[1].trim() : '';
+      rDesc = cols[2] ? cols[2].trim() : '';
+    }
+
+    if (sName) newStudents.push(sName);
+    if (rTitle) {
+      newRoles.push({
+        icon: "⭐",
+        title: rTitle,
+        desc: rDesc || "학급을 위한 소중한 역할이에요."
+      });
+    }
+  });
+
+  if (newStudents.length === 0 && newRoles.length === 0) {
+    alert("데이터를 인식하지 못했습니다. 열 구분을 확인해 주세요.");
+    return;
+  }
+
+  if (newStudents.length > 0) {
+    students = newStudents;
+    localStorage.setItem('class_students', JSON.stringify(students));
+  }
+  if (newRoles.length > 0) {
+    roles = newRoles;
+    localStorage.setItem('class_roles', JSON.stringify(roles));
+  }
+
+  closeModal('sheetModal');
+  showToast(`📋 붙여넣은 데이터 적용 완료: 학생 ${newStudents.length}명, 역할 ${newRoles.length}개`);
+  renderApp();
 }
 
 function copyToClipboardTable() {

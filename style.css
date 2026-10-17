@@ -820,6 +820,57 @@ body {
   line-height: 1.55;
 }
 
+.guide-box.info {
+  background: #142233;
+  border-color: #1e3a5f;
+  color: #93c5fd;
+}
+
+.guide-box.success {
+  background: #12281a;
+  border-color: #1a4d2e;
+  color: #86efac;
+}
+
+.modal-tabs {
+  display: flex;
+  background: #121212;
+  border-radius: var(--radius-sm);
+  padding: 3px;
+  gap: 4px;
+  border: 1px solid var(--border-dark);
+}
+
+.modal-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  text-align: center;
+}
+
+.modal-tab-btn.active {
+  background: var(--netflix-red);
+  color: #ffffff;
+}
+
+.tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
 .guide-box ol {
   padding-left: 20px;
   margin-top: 6px;
